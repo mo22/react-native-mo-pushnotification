@@ -1,0 +1,36 @@
+{
+  "name": "react-native-mo-pushnotification",
+  "version": "0.1.0",
+  "description": "react-native pushnotification push notifications for ios and android",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "package.json",
+    "src/*",
+    "lib/*",
+    "android",
+    "ios/**/*.{h,m,pbxproj}",
+    "*.podspec"
+  ],
+  "devDependencies": {
+    "@types/react-native": "^0.60.8",
+    "react": "^16.9.0",
+    "react-native": "^0.60.5",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mo22/react-native-mo-pushnotification.git"
+  },
+  "author": "Moritz Moeller <mm@mxs.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mo22/react-native-mo-pushnotification/issues"
+  },
+  "homepage": "https://github.com/mo22/react-native-mo-pushnotification#readme"
+}
