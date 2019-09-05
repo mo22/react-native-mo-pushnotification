@@ -23,11 +23,6 @@ export declare enum NotificationSetting {
     Disabled = 1,
     Enabled = 2
 }
-export declare enum PushKitType {
-    VoIP = "PKPushTypeVoIP",
-    Complication = "PKPushTypeComplication",
-    FileProvider = "PKPushTypeFileProvider"
-}
 export interface DeliveredNotification {
     body?: string | null;
     sound?: string | null;
@@ -105,7 +100,6 @@ export interface Module {
     openNotificationSettings(): void;
     showNotification(args: NotificationArgs): Promise<void>;
     setupCategories(categories: Category[]): void;
-    pushKitInit(types: PushKitType[]): void;
 }
 export declare type Event = {
     type: 'didRegisterForRemoteNotificationsWithDeviceToken';
@@ -142,22 +136,6 @@ export declare type Event = {
     type: 'willPresentNotification';
     notification: DeliveredNotification;
     callbackKey: string;
-} | {
-    type: 'didUpdatePushCredentials';
-    pushType: PushKitType;
-    pushCredentials: string;
-    isDevEnvironment: boolean;
-    bundle: string;
-    locale: string;
-} | {
-    type: 'didInvalidatePushToken';
-    pushType: PushKitType;
-} | {
-    type: 'didReceiveIncomingPush';
-    pushType: PushKitType;
-    payload: any;
-    callbackKey: string;
-    extraKey?: string;
 };
 export declare const Module: Module | undefined;
 export declare const Events: {

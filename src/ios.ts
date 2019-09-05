@@ -151,22 +151,6 @@ export type Event = {
   type: 'willPresentNotification';
   notification: DeliveredNotification;
   callbackKey: string;
-} | {
-  type: 'didUpdatePushCredentials';
-  pushType: PushKitType;
-  pushCredentials: string;
-  isDevEnvironment: boolean;
-  bundle: string;
-  locale: string;
-} | {
-  type: 'didInvalidatePushToken';
-  pushType: PushKitType;
-} | {
-  type: 'didReceiveIncomingPush';
-  pushType: PushKitType;
-  payload: any;
-  callbackKey: string;
-  extraKey?: string;
 };
 
 export const Module = (Platform.OS === 'ios') ? NativeModules.ReactNativeMoPushNotification as Module : undefined;
