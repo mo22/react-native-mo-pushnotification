@@ -31,7 +31,7 @@ static BOOL g_verbose;
 
 
 
-@interface ReactNativeMoPushNotification () <UNUserNotificationCenterDelegate, PKPushRegistryDelegate>
+@interface ReactNativeMoPushNotification () <UNUserNotificationCenterDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString*, void (^)(id result)>* callbacks;
 @property BOOL verbose;
 @end
