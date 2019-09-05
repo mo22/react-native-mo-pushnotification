@@ -1,17 +1,44 @@
 import * as React from 'react';
 import { PermissionsAndroid, ScrollView } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { Vibrate } from 'react-native-mo-vibrate';
+import { PushNotification } from 'react-native-mo-pushnotification';
 
 function keysOf<T extends {}>(obj: T): (keyof T)[] {
   const objany = obj as any;
   return Object.keys(obj).filter((i) => typeof objany[objany[i]] !== 'number') as any;
 }
 
-export default class Menu extends React.PureComponent<{}> {
+interface State {
+  permissions?: string;
+}
+
+export default class Menu extends React.PureComponent<{}, State> {
+  public state: State = {
+  };
+
+  public async componentDidMount() {
+    this.setState({ permissions: await PushNotification.getPermissionStatus() });
+  }
+
   public render() {
     return (
       <ScrollView>
+
+        {/*
+          - permission status + request (geolocation)
+          - get current token and show token / copy token to clipboard?
+
+          - show local notification -> extra page ... after delay?
+        */}
+
+        <ListItem
+          title="request permissions"
+          subtitle={this.state.permissions || ''}
+          onPress={async () => {
+            const res = await PushNotification.requestPermission();
+            this.setState({ permissions: res });
+          }}
+        />
 
         <ListItem
           title="nothing"
@@ -19,54 +46,6 @@ export default class Menu extends React.PureComponent<{}> {
           onPress={() => {
           }}
         />
-
-        {keysOf(Vibrate.Type).map((type) => (
-          <ListItem
-            key={type}
-            title={type}
-            chevron={true}
-            onPress={() => {
-              Vibrate.vibrate(Vibrate.Type[type]);
-            }}
-          />
-        ))}
-
-        {Vibrate.android.Module && (
-          <ListItem
-            title="android custom"
-            chevron={true}
-            onPress={async () => {
-              await PermissionsAndroid.request('android.permission.VIBRATE' as any);
-              Vibrate.android.Module!.vibratePattern({
-                pattern: [ 1000, 100 ],
-                amplitude: [ 255, 255 ],
-                repeat: -1,
-              });
-            }}
-          />
-        )}
-
-        {Vibrate.android.Module && keysOf(Vibrate.android.VibrateType).map((type) => (
-          <ListItem
-            key={type}
-            title={'android ' + type}
-            chevron={true}
-            onPress={() => {
-              Vibrate.android.Module!.vibrate(Vibrate.android.VibrateType[type]);
-            }}
-          />
-        ))}
-
-        {Vibrate.ios.Module && keysOf(Vibrate.ios.VibrateType).map((type) => (
-          <ListItem
-            key={type}
-            title={'ios ' + type}
-            chevron={true}
-            onPress={() => {
-              Vibrate.ios.Module!.vibrate(Vibrate.ios.VibrateType[type]);
-            }}
-          />
-        ))}
 
       </ScrollView>
     );

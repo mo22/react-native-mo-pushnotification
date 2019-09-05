@@ -56,7 +56,7 @@ PODS:
     - React-cxxreact (= 0.60.5)
     - React-jsi (= 0.60.5)
   - React-jsinspector (0.60.5)
-  - react-native-mo-pushnotification (0.1.0):
+  - react-native-mo-pushnotification (0.1.2):
     - React
   - React-RCTActionSheet (0.60.5):
     - React-Core (= 0.60.5)
@@ -83,7 +83,7 @@ PODS:
     - React-Core (= 0.60.5)
   - RNGestureHandler (1.4.1):
     - React
-  - RNScreens (1.0.0-alpha.23):
+  - RNScreens (2.0.0-alpha.1):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -184,7 +184,7 @@ SPEC CHECKSUMS:
   React-jsi: 4d8c9efb6312a9725b18d6fc818ffc103f60fec2
   React-jsiexecutor: 90ad2f9db09513fc763bc757fdc3c4ff8bde2a30
   React-jsinspector: e08662d1bf5b129a3d556eb9ea343a3f40353ae4
-  react-native-mo-pushnotification: 5420c9d87e98dd67ec217d962aeec13c43540de7
+  react-native-mo-pushnotification: 28db5067449d9a3d92a12a3d638a59096142dc8f
   React-RCTActionSheet: b0f1ea83f4bf75fb966eae9bfc47b78c8d3efd90
   React-RCTAnimation: 359ba1b5690b1e87cc173558a78e82d35919333e
   React-RCTBlob: 5e2b55f76e9a1c7ae52b826923502ddc3238df24
@@ -196,10 +196,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: 2105b2e0e2b66a6408fc69a46c8a7fb5b2fdade0
   React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
-  RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
+  RNScreens: 35e771c226db35b0ef716d0eadaf5da3efa52365
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: 54eb0fd240f6134c7b39890d98d74d8d96f35989
+PODFILE CHECKSUM: b4f7c4ceca11b597df8b2465f6d352fe9649cbab
 
 COCOAPODS: 1.7.5

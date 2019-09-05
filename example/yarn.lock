@@ -4577,6 +4577,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mo-core@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/mo-core/-/mo-core-0.1.1.tgz#bfb68a95ea1fead9c61b43b8a1500ce58708a5bd"
+  integrity sha512-n2zpOQjLlB3wZNLLroy75uWwD4XO4Qayxc1swXay4sgTSXJ/OXElG23KF/kolK2xE+o5XHcbwMMegxe+w0K+5Q==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
@@ -5341,10 +5346,12 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-pushnotification@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.0.tgz#5a5e2c6ac01184d464b0cb4a9b0468a87306c66e"
-  integrity sha512-Gj5aOfS9LyuuxDxK1XFR0sEQ6Yh7s/fx+OIfuNQjf9fCMDhOijPbkRnE+tBpvc7EzDOghJrf3JbD+0oARSqa7A==
+react-native-mo-pushnotification@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.2.tgz#84079be92e23735d5e2a272527453a0d7c4bdf0e"
+  integrity sha512-5fPrxqu9V89bo9T2f6MhFVZLBO9xKnwEExAlQpptDZLzYENyfFAtSgMnZcXRPfjmQNbQha1YLPwKDesHWd7v0Q==
+  dependencies:
+    mo-core "^0.1.1"
 
 react-native-ratings@^6.3.0:
   version "6.4.0"
@@ -5361,10 +5368,17 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-"react-native-screens@^1.0.0 || ^1.0.0-alpha", react-native-screens@^1.0.0-alpha.23:
+"react-native-screens@^1.0.0 || ^1.0.0-alpha":
   version "1.0.0-alpha.23"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-1.0.0-alpha.23.tgz#25d7ea4d11bda4fcde2d1da7ae50271c6aa636e0"
   integrity sha512-tOxHGQUN83MTmQB4ghoQkibqOdGiX4JQEmeyEv96MKWO/x8T2PJv84ECUos9hD3blPRQwVwSpAid1PPPhrVEaw==
+  dependencies:
+    debounce "^1.2.0"
+
+react-native-screens@^2.0.0-alpha.1:
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.1.tgz#6e65fcc4c78ba3c1d911f5da8b9c8063f0f3dae1"
+  integrity sha512-fbipP54xcdHnPaQq21mz41HzHpbHzUBkk4IVzXgt+9SNXGKs+tYBvIMX9OEcp6shYzspsI9EpUcqG3U++xQO0Q==
   dependencies:
     debounce "^1.2.0"
 
