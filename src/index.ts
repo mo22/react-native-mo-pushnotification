@@ -1,12 +1,19 @@
 import { EmitterSubscription } from 'react-native';
-import { Subject } from 'rxjs';
+import { Event } from 'mo-core';
 import * as ios from './ios';
 import * as android from './android';
 
+/**
+ * a push notification token / subscription
+ */
 export interface PushNotificationToken {
+  /** type of token */
   type: 'ios-dev'|'ios'|'android-fcm';
+  /** the actual token */
   token: string;
+  /** the id of this app: bundle id or package */
   id: string;
+  /** the locale of this app */
   locale: string;
 }
 
@@ -40,14 +47,59 @@ export enum PushNotificationPermissionStatus {
 }
 
 export class PushNotification {
+  /**
+   * native ios functions. use with caution
+   */
   public static readonly ios = ios;
+
+  /**
+   * native android functions. use with caution
+   */
   public static readonly android = android;
 
-  public static readonly onNotification = new Subject<PushNotificationNotification>();
-  public static readonly onInteraction = new Subject<PushNotificationNotification & { action: string; }>();
+  /**
+   * called when a notification is received
+   */
+  public static readonly onNotification = new Event<PushNotificationNotification>((emit) => {
+    PushNotification.onNotificationEmit = emit;
+    return () => {
+      PushNotification.onNotificationEmit = undefined;
+    };
+  });
+  private static onNotificationEmit?: (notification: PushNotificationNotification) => void;
+
+  /**
+   * called when a notification is clicked / interacted with
+   */
+  public static readonly onInteraction = new Event<PushNotificationNotification & { action: string; }>((emit) => {
+    PushNotification.onInteractionEmit = emit;
+    return () => {
+      PushNotification.onInteractionEmit = undefined;
+    };
+  });
+  private static onInteractionEmit?: (notification: PushNotificationNotification & { action: string; }) => void;
+
+  /**
+   * the last interaction that happened. can be used to check the initial
+   * interaction that opened the app
+   */
   public static lastInteraction?: PushNotificationNotification & { action: string; };
+
+  /**
+   * called when the app is in foreground and a notification is received,
+   * before the notification is shown.
+   * return false here to prevent the notification from being shown.
+   * i.e. a new chat while that chat is currently open
+   */
   public static onShowNotification: (notification: PushNotificationNotification) => boolean|Promise<boolean> = () => true;
+
+  /**
+   * called when a notification is received. app is running in background for
+   * some time until this callback is finished.
+   * can be used to load more data.
+   */
   public static onFetchData: (notification: PushNotificationNotification) => boolean|Promise<boolean> = () => true;
+
   private static verbose: boolean = false;
 
   private static currentToken?: PushNotificationToken;
@@ -62,7 +114,11 @@ export class PushNotification {
     }
   }
 
-  public static setBadge(value: number) {
+  /**
+   * set the application's badge
+   * works fine in ios, only partial support in android
+   */
+  public static async setBadge(value: number) {
     if (ios.Module) {
       ios.Module.setApplicationIconBadgeNumber(value);
     } else if (android.Module) {
@@ -70,6 +126,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * check if push permissions have been granted
+   */
   public static async getPermissionStatus(): Promise<PushNotificationPermissionStatus> {
     if (ios.Module) {
       const status = await ios.Module.getNotificationSettings();
@@ -83,6 +142,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * request push permissions
+   */
   public static async requestPermission(): Promise<PushNotificationPermissionStatus> {
     if (ios.Module) {
       const status = await ios.Module.getNotificationSettings();
@@ -101,6 +163,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * open the notification settings
+   */
   public static openSettings(): void {
     if (ios.Module) {
       ios.Module.openNotificationSettings();
@@ -110,6 +175,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * run callback with a background task / wake lock held.
+   */
   public static async runInBackground<T>(callback: () => Promise<T>): Promise<T> {
     if (ios.Module) {
       const id = await ios.Module.beginBackgroundTask();
@@ -130,6 +198,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * request notification token
+   */
   public static async requestToken(): Promise<PushNotificationToken> {
     if (ios.Module) {
       if (!this.currentToken) {
@@ -184,13 +255,19 @@ export class PushNotification {
     }
   }
 
-  public static iosSetupCategories(categories: ios.Category[]) {
+  /**
+   * setup ios categories
+   */
+  public static async iosSetupCategories(categories: ios.Category[]) {
     if (ios.Module) {
       ios.Module.setupCategories(categories);
     }
   }
 
-  public static androidSetupChannels(channels: (Partial<android.Channel> & { id: string })[]) {
+  /**
+   * setup android push channels
+   */
+  public static async androidSetupChannels(channels: (Partial<android.Channel> & { id: string })[]) {
     if (android.Module) {
       for (const channel of channels) {
         android.Module.createNotificationChannel(channel);
@@ -198,12 +275,17 @@ export class PushNotification {
     }
   }
 
-  public static androidStartMainActivity() {
+  /**
+   * start android main activity, force in foreground
+   * @TODO: android Q prevents this.
+   */
+  public static async androidStartMainActivity() {
     if (android.Module) {
       android.Module.startMainActivity();
     }
   }
 
+  // @TODO: only on subscribe etc.
   public static init() {
     if (ios.Module) {
       const convertNotification = (rs: ios.DeliveredNotification): PushNotificationNotification => {
@@ -235,7 +317,10 @@ export class PushNotification {
             body: rs.userInfo.aps && rs.userInfo.aps.alert && rs.userInfo.aps.alert.body,
             data: data,
           };
-          this.onNotification.next(notification);
+          if (this.onNotificationEmit) {
+            this.onNotificationEmit(notification);
+          }
+          // @TODO fetch data for all notfications?
           this.runInBackground(async () => {
             try {
               const res = await this.onFetchData(notification);
@@ -265,20 +350,13 @@ export class PushNotification {
             ...convertNotification(rs.notification),
             action: rs.actionIdentifier,
           };
-          this.onInteraction.next({
-            ...convertNotification(rs.notification),
-            action: (rs.actionIdentifier === 'com.apple.UNNotificationDefaultActionIdentifier') ? 'default' : rs.actionIdentifier,
-          });
+          if (this.onInteractionEmit) {
+            this.onInteractionEmit({
+              ...convertNotification(rs.notification),
+              action: (rs.actionIdentifier === 'com.apple.UNNotificationDefaultActionIdentifier') ? 'default' : rs.actionIdentifier,
+            });
+          }
           ios.Module!.invokeCallback(rs.callbackKey, 0);
-
-        } else if (rs.type === 'didReceiveIncomingPush') {
-          this.onNotification.next({
-            date: Date.now(),
-            id: rs.pushType,
-            data: rs.payload,
-            // callbackKey?
-            extraKey: rs.extraKey,
-          });
 
         }
 
@@ -296,7 +374,9 @@ export class PushNotification {
             title: rs.title || undefined,
             body: rs.body || undefined,
           };
-          this.onNotification.next(notification);
+          if (this.onNotificationEmit) {
+            this.onNotificationEmit(notification);
+          }
 
           this.runInBackground(async () => {
             if (rs.title || rs.body) {
@@ -309,24 +389,28 @@ export class PushNotification {
           });
 
         } else if (rs.type === 'onNotificationClicked') {
-          this.onInteraction.next({
-            id: String(rs.id),
-            channelID: rs.channelID || undefined,
-            title: rs.title || undefined,
-            subtitle: rs.subtext || undefined,
-            body: rs.body || undefined,
-            badge: rs.number,
-            color: rs.color,
-            data: rs.data,
-            action: 'default',
-          });
+          if (this.onInteractionEmit) {
+            this.onInteractionEmit({
+              id: String(rs.id),
+              channelID: rs.channelID || undefined,
+              title: rs.title || undefined,
+              subtitle: rs.subtext || undefined,
+              body: rs.body || undefined,
+              badge: rs.number,
+              color: rs.color,
+              data: rs.data,
+              action: 'default',
+            });
+          }
 
         } else if (rs.type === 'onNotificationIntent') {
-          this.onInteraction.next({
-            id: rs.messageId,
-            data: rs.data,
-            action: 'default',
-          });
+          if (this.onInteractionEmit) {
+            this.onInteractionEmit({
+              id: rs.messageId,
+              data: rs.data,
+              action: 'default',
+            });
+          }
 
         }
       });
@@ -334,6 +418,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * get the active notifications from the notification center
+   */
   public static async getNotifications(): Promise<(PushNotificationNotification & { id: string })[]> {
     if (ios.Module) {
       let tmp = await ios.Module.getDeliveredNotifications();
@@ -378,7 +465,10 @@ export class PushNotification {
     }
   }
 
-  public static removeNotification(id: string) {
+  /**
+   * remove a notification from the notification center
+   */
+  public static async removeNotification(id: string) {
     if (ios.Module) {
       ios.Module.removeDeliveredNotifications([ id ]);
     } else if (android.Module) {
@@ -386,6 +476,9 @@ export class PushNotification {
     }
   }
 
+  /**
+   * show a notification
+   */
   public static async showNotification(args: PushNotificationNotification): Promise<string|undefined> {
     if (ios.Module) {
       const id = Date.now().toString();
@@ -427,4 +520,4 @@ export class PushNotification {
 
 }
 
-PushNotification.init();
+PushNotification.init(); // @TODO: remove

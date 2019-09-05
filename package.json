@@ -18,7 +18,9 @@
     "react-native": "^0.60.5",
     "typescript": "^3.5.3"
   },
-  "dependencies": {},
+  "dependencies": {
+    "mo-core": "^0.1.1"
+  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
