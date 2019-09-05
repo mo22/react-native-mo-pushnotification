@@ -99,7 +99,7 @@ export declare class PushNotification {
     /**
      * open the notification settings
      */
-    static openSettings(): void;
+    static openSettings(): Promise<void>;
     /**
      * run callback with a background task / wake lock held.
      */
