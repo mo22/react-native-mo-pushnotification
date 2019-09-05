@@ -551,9 +551,9 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     }];
 }
 
-+ (void)setPushKitHandler:(NSString*(^)(PKPushPayload* payload))handler {
-    g_pushKitHandler = handler;
-}
+//+ (void)setPushKitHandler:(NSString*(^)(PKPushPayload* payload))handler {
+//    g_pushKitHandler = handler;
+//}
 
 // pushRegistry delegate
 //- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)pushCredentials forType:(PKPushType)type {
