@@ -10,6 +10,7 @@ function keysOf<T extends {}>(obj: T): (keyof T)[] {
 
 interface State {
   permissions?: string;
+  token?: string;
 }
 
 export default class Menu extends React.PureComponent<{}, State> {
@@ -39,6 +40,23 @@ export default class Menu extends React.PureComponent<{}, State> {
             this.setState({ permissions: res });
           }}
         />
+
+        <ListItem
+          title="open settings"
+          onPress={async () => {
+            await PushNotification.openSettings();
+          }}
+        />
+
+        <ListItem
+          title="push token"
+          subtitle={this.state.token || ''}
+          onPress={async () => {
+            const res = await PushNotification.requestToken();
+            this.setState({ token: JSON.stringify(res) });
+          }}
+        />
+
 
         <ListItem
           title="nothing"
