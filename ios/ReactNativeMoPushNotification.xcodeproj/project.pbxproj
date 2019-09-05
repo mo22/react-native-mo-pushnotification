@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		986E644C224CFDF700BC642D /* libReactNativeMoPushNotification.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeMoPushNotification.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		986E6450224CFDF700BC642D /* ReactNativeMoPushNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReactNativeMoPushNotification.m; sourceTree = "<group>"; };
+		9876047923215121008CF101 /* ReactNativeMoPushNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactNativeMoPushNotification.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +58,7 @@
 		986E644E224CFDF700BC642D /* ReactNativeMoPushNotification */ = {
 			isa = PBXGroup;
 			children = (
+				9876047923215121008CF101 /* ReactNativeMoPushNotification.h */,
 				986E6450224CFDF700BC642D /* ReactNativeMoPushNotification.m */,
 			);
 			path = ReactNativeMoPushNotification;

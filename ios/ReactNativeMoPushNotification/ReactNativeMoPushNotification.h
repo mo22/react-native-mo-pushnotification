@@ -1,7 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <React/RCTEventEmitter.h>
 #import <UserNotifications/UserNotifications.h>
-#import <PushKit/PushKit.h>
 
 @interface ReactNativeMoPushNotification : RCTEventEmitter
 
@@ -17,8 +16,5 @@
 // only forward these if you are handling the UNUserNotificationCenter delegate yourself
 + (void)willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler;
-
-// set instant-handler for pushkit voip notifications
-+ (void)setPushKitHandler:(NSString*(^)(PKPushPayload* payload))handler;
 
 @end

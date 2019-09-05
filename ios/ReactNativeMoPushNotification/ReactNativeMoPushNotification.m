@@ -2,7 +2,6 @@
 #import <UserNotifications/UserNotifications.h>
 #import "ReactNativeMoPushNotification.h"
 #import <React/RCTUtils.h>
-#import <PushKit/PushKit.h>
 #import <objc/runtime.h>
 
 
@@ -30,13 +29,10 @@ static void methodSwizzle(Class cls1, Class cls2, SEL sel) {
 
 static BOOL g_verbose;
 
-static NSString* (^g_pushKitHandler)(PKPushPayload* payload);
-
 
 
 @interface ReactNativeMoPushNotification () <UNUserNotificationCenterDelegate, PKPushRegistryDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString*, void (^)(id result)>* callbacks;
-@property (nonatomic, strong) PKPushRegistry* pushRegistry;
 @property BOOL verbose;
 @end
 
@@ -267,46 +263,46 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
             @"callbackKey": callbackKey,
         }];
 
-    } else if ([rs[@"type"] isEqualToString:@"didUpdatePushCredentials"]) {
-        PKPushCredentials* pushCredentials = rs[@"pushCredentials"];
-        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-            @"type": @"didUpdatePushCredentials",
-            @"pushType": rs[@"pushType"],
-            @"pushCredentials": [self dataToHex:pushCredentials.token],
-            @"isDevEnvironment": @([self isDevEnvironment]),
-            @"bundle": [[NSBundle mainBundle] bundleIdentifier],
-            @"locale": [[NSLocale preferredLanguages] firstObject],
-        }];
-
-    } else if ([rs[@"type"] isEqualToString:@"didInvalidatePushToken"]) {
-        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-            @"type": @"didInvalidatePushToken",
-            @"pushType": rs[@"pushType"],
-        }];
-
-    } else if ([rs[@"type"] isEqualToString:@"didReceiveIncomingPush"]) {
-        void (^completionHandler)(void) = rs[@"completionHandler"];
-        PKPushPayload* payload = rs[@"payload"];
-        NSString* callbackKey = [self newCallbackWithBlock:^(id result) {
-            completionHandler();
-        }];
-        
-        NSString* extraKey = nil;
-        if (g_pushKitHandler) {
-            if (self.verbose) NSLog(@"ReactNativeMoPushNotification.handle call g_pushKitHandler");
-            extraKey = g_pushKitHandler(payload);
-        }
-        
-        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-            @"type": @"didReceiveIncomingPush",
-            @"pushType": rs[@"pushType"],
-            @"payload": payload.dictionaryPayload,
-            @"callbackKey": callbackKey,
-            @"extraKey": RCTNullIfNil(extraKey),
-        }];
-        
-        sleep(1);
-
+//    } else if ([rs[@"type"] isEqualToString:@"didUpdatePushCredentials"]) {
+//        PKPushCredentials* pushCredentials = rs[@"pushCredentials"];
+//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
+//            @"type": @"didUpdatePushCredentials",
+//            @"pushType": rs[@"pushType"],
+//            @"pushCredentials": [self dataToHex:pushCredentials.token],
+//            @"isDevEnvironment": @([self isDevEnvironment]),
+//            @"bundle": [[NSBundle mainBundle] bundleIdentifier],
+//            @"locale": [[NSLocale preferredLanguages] firstObject],
+//        }];
+//
+//    } else if ([rs[@"type"] isEqualToString:@"didInvalidatePushToken"]) {
+//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
+//            @"type": @"didInvalidatePushToken",
+//            @"pushType": rs[@"pushType"],
+//        }];
+//
+//    } else if ([rs[@"type"] isEqualToString:@"didReceiveIncomingPush"]) {
+//        void (^completionHandler)(void) = rs[@"completionHandler"];
+//        PKPushPayload* payload = rs[@"payload"];
+//        NSString* callbackKey = [self newCallbackWithBlock:^(id result) {
+//            completionHandler();
+//        }];
+//
+//        NSString* extraKey = nil;
+//        if (g_pushKitHandler) {
+//            if (self.verbose) NSLog(@"ReactNativeMoPushNotification.handle call g_pushKitHandler");
+//            extraKey = g_pushKitHandler(payload);
+//        }
+//
+//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
+//            @"type": @"didReceiveIncomingPush",
+//            @"pushType": rs[@"pushType"],
+//            @"payload": payload.dictionaryPayload,
+//            @"callbackKey": callbackKey,
+//            @"extraKey": RCTNullIfNil(extraKey),
+//        }];
+//
+//        sleep(1);
+//
     } else {
         NSLog(@"ReactNativeMoPushNotification received unknown %@", rs[@"type"]);
         
@@ -487,12 +483,12 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     [[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:categories];
 }
 
-RCT_EXPORT_METHOD(pushKitInit:(NSArray*)types) {
-    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.pushKitInit %@", types);
-    self.pushRegistry = [[PKPushRegistry alloc] initWithQueue:nil];
-    self.pushRegistry.desiredPushTypes = [NSSet setWithArray:types];
-    self.pushRegistry.delegate = self;
-}
+//RCT_EXPORT_METHOD(pushKitInit:(NSArray*)types) {
+//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.pushKitInit %@", types);
+//    self.pushRegistry = [[PKPushRegistry alloc] initWithQueue:nil];
+//    self.pushRegistry.desiredPushTypes = [NSSet setWithArray:types];
+//    self.pushRegistry.delegate = self;
+//}
 
 
 
@@ -560,32 +556,32 @@ RCT_EXPORT_METHOD(pushKitInit:(NSArray*)types) {
 }
 
 // pushRegistry delegate
-- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)pushCredentials forType:(PKPushType)type {
-    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didUpdatePushCredentials %@ %@", pushCredentials, type);
-    [ReactNativeMoPushNotification addToNotificationQueue:@{
-        @"type": @"didUpdatePushCredentials",
-        @"pushCredentials": pushCredentials,
-        @"pushType": type,
-    }];
-}
-
-- (void)pushRegistry:(PKPushRegistry *)registry didInvalidatePushTokenForType:(PKPushType)type {
-    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didInvalidatePushTokenForType %@", type);
-    [ReactNativeMoPushNotification addToNotificationQueue:@{
-        @"type": @"didInvalidatePushToken",
-        @"pushType": type,
-    }];
-}
-
-- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
-    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didReceiveIncomingPushWithPayload %@ %@", payload, type);
-    [ReactNativeMoPushNotification addToNotificationQueue:@{
-        @"type": @"didReceiveIncomingPush",
-        @"payload": payload,
-        @"pushType": type,
-        @"completionHandler": completion,
-    }];
-}
+//- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)pushCredentials forType:(PKPushType)type {
+//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didUpdatePushCredentials %@ %@", pushCredentials, type);
+//    [ReactNativeMoPushNotification addToNotificationQueue:@{
+//        @"type": @"didUpdatePushCredentials",
+//        @"pushCredentials": pushCredentials,
+//        @"pushType": type,
+//    }];
+//}
+//
+//- (void)pushRegistry:(PKPushRegistry *)registry didInvalidatePushTokenForType:(PKPushType)type {
+//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didInvalidatePushTokenForType %@", type);
+//    [ReactNativeMoPushNotification addToNotificationQueue:@{
+//        @"type": @"didInvalidatePushToken",
+//        @"pushType": type,
+//    }];
+//}
+//
+//- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
+//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didReceiveIncomingPushWithPayload %@ %@", payload, type);
+//    [ReactNativeMoPushNotification addToNotificationQueue:@{
+//        @"type": @"didReceiveIncomingPush",
+//        @"payload": payload,
+//        @"pushType": type,
+//        @"completionHandler": completion,
+//    }];
+//}
 
 // swizzled
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
