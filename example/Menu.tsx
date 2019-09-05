@@ -46,7 +46,6 @@ export default class Menu extends React.PureComponent<{}, State> {
         <ListItem
           title="open settings"
           onPress={async () => {
-            console.log('open settings 0');
             await PushNotification.openSettings();
           }}
         />
