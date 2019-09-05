@@ -28,12 +28,6 @@ export enum NotificationSetting {
   Enabled = 2,
 }
 
-export enum PushKitType {
-  VoIP = 'PKPushTypeVoIP',
-  Complication = 'PKPushTypeComplication',
-  FileProvider = 'PKPushTypeFileProvider',
-}
-
 export interface DeliveredNotification {
   body?: string|null;
   sound?: string|null;
@@ -120,7 +114,6 @@ export interface Module {
   openNotificationSettings(): void;
   showNotification(args: NotificationArgs): Promise<void>;
   setupCategories(categories: Category[]): void;
-  pushKitInit(types: PushKitType[]): void;
 }
 
 export type Event = {
@@ -176,7 +169,7 @@ export type Event = {
   extraKey?: string;
 };
 
-export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoPushNotification as Module : undefined;
+export const Module = (Platform.OS === 'ios') ? NativeModules.ReactNativeMoPushNotification as Module : undefined;
 
 export const Events = Module ? new NativeEventEmitter(NativeModules.ReactNativeMoPushNotification) as {
   addListener(eventType: 'ReactNativeMoPushNotification', listener: (event: Event) => void): EmitterSubscription;

@@ -8,6 +8,8 @@ function keysOf<T extends {}>(obj: T): (keyof T)[] {
   return Object.keys(obj).filter((i) => typeof objany[objany[i]] !== 'number') as any;
 }
 
+PushNotification.setVerbose(true);
+
 interface State {
   permissions?: string;
   token?: string;
@@ -44,6 +46,7 @@ export default class Menu extends React.PureComponent<{}, State> {
         <ListItem
           title="open settings"
           onPress={async () => {
+            console.log('open settings 0');
             await PushNotification.openSettings();
           }}
         />

@@ -167,7 +167,9 @@ export class PushNotification {
    * open the notification settings
    */
   public static async openSettings() {
+    console.log('openSettings 1');
     if (ios.Module) {
+      console.log('openSettings 2');
       ios.Module.openNotificationSettings();
     } else if (android.Module) {
       android.Module.openNotificationSettings();
