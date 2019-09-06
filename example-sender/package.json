@@ -1,0 +1,14 @@
+{
+  "name": "example-sender",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apn": "^2.2.0",
+    "firebase-admin": "^8.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.4",
+    "typescript": "^3.6.2"
+  }
+}

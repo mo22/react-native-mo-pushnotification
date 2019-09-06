@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "outDir": "lib",
+    "rootDir": "src",
+    "preserveConstEnums": true,
+    "allowJs": false,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "declaration": true,
+    "removeComments": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "lib": [ "es2017", "es6", "dom" ],
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*", "types/**/*"],
+  "compileOnSave": true
+}

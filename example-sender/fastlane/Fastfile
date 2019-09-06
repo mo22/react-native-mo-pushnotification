@@ -1,0 +1,22 @@
+opt_out_usage
+skip_docs
+
+platform :ios do
+
+  lane :pushcert do
+    get_push_certificate(
+      force: true,
+      app_identifier: "de.mxs.reactnativemopushnotification.example",
+      save_private_key: true,
+      username: "mm@mxs.de",
+      team_id: "5AD8YQQF48",
+      generate_p12: false,
+      pem_name: "apns",
+      new_profile: proc do |profile_path|
+        File.write(profile_path, File.read(profile_path) + File.read(profile_path[0..-5] + ".pkey"))
+        File.unlink(profile_path[0..-5] + ".pkey")
+      end
+    )
+  end
+
+end
