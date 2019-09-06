@@ -4,7 +4,8 @@
 - ios: need push notification capability
 - ios: in AppDelegate [ReactNativeMoPushNotification setup];
 
-- android: needs FirebaseApp.initializeApp(Context)
+- android: needs gradle apply plugin: 'com.google.gms.google-services'
+- android: needs google-services.json
 
 ## Usage
 

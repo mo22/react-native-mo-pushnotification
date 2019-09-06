@@ -130,7 +130,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "de.mxs.reactnativemogeolocation.example"
+        applicationId "de.mxs.reactnativemopushnotification.example"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
