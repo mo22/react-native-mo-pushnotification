@@ -77,6 +77,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
 + (void)setup {
     static id<UIApplicationDelegate> appDelegate;
     if (appDelegate == nil) {
+        NSLog(@"XXX setup");
         [self didFinishLaunchingWithOptions:nil];
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:));
@@ -502,6 +503,7 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSLog(@"XXX didRegisterForRemoteNotificationsWithDeviceToken");
     [self addToNotificationQueue:@{
         @"type": @"didRegisterForRemoteNotificationsWithDeviceToken",
         @"deviceToken": deviceToken,
