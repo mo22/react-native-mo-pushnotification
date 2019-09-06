@@ -242,14 +242,17 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void openNotificationSettings() {
+        Activity activity = getReactApplicationContext().getCurrentActivity();
+        if (activity == null) throw new RuntimeException("activity == null");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, getReactApplicationContext().getPackageName());
-            getReactApplicationContext().startActivity(intent);
+            activity.startActivity(intent);
         } else if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.setData(Uri.parse("package:" + getReactApplicationContext().getPackageName()));
+            activity.startActivity(intent);
         }
     }
 
