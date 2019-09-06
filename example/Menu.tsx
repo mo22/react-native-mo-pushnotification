@@ -55,6 +55,7 @@ export default class Menu extends React.PureComponent<{}, State> {
           subtitle={this.state.token || ''}
           onPress={async () => {
             const res = await PushNotification.requestToken();
+            console.log(res);
             this.setState({ token: JSON.stringify(res) });
           }}
         />
