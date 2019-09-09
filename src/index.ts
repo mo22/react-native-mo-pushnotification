@@ -341,7 +341,12 @@ export class PushNotification {
           });
 
         } else if (rs.type === 'willPresentNotification') {
-          Promise.resolve(this.onShowNotification(convertNotification(rs.notification))).then((result) => {
+          // @TODO: also trigger onNotification here?
+          const notification = convertNotification(rs.notification);
+          if (this.onNotificationEmit) {
+            this.onNotificationEmit(notification);
+          }
+          Promise.resolve(this.onShowNotification(notification)).then((result) => {
             if (result) {
               ios.Module!.invokeCallback(rs.callbackKey, ios.AuthorizationOption.Sound + ios.AuthorizationOption.Alert + ios.AuthorizationOption.Badge);
             } else {
