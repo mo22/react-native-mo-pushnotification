@@ -254,7 +254,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
         UNNotification* notification = rs[@"notification"];
         if (self.verbose) NSLog(@"ReactNativeMoPushNotification willPresentNotification %@", notification);
         void (^completionHandler)(UNNotificationPresentationOptions) = rs[@"completionHandler"];
-//        completionHandler(UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge);
         NSString* callbackKey = [self newCallbackWithBlock:^(id result) {
             completionHandler([result intValue]);
         }];
@@ -264,46 +263,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
             @"callbackKey": callbackKey,
         }];
 
-//    } else if ([rs[@"type"] isEqualToString:@"didUpdatePushCredentials"]) {
-//        PKPushCredentials* pushCredentials = rs[@"pushCredentials"];
-//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-//            @"type": @"didUpdatePushCredentials",
-//            @"pushType": rs[@"pushType"],
-//            @"pushCredentials": [self dataToHex:pushCredentials.token],
-//            @"isDevEnvironment": @([self isDevEnvironment]),
-//            @"bundle": [[NSBundle mainBundle] bundleIdentifier],
-//            @"locale": [[NSLocale preferredLanguages] firstObject],
-//        }];
-//
-//    } else if ([rs[@"type"] isEqualToString:@"didInvalidatePushToken"]) {
-//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-//            @"type": @"didInvalidatePushToken",
-//            @"pushType": rs[@"pushType"],
-//        }];
-//
-//    } else if ([rs[@"type"] isEqualToString:@"didReceiveIncomingPush"]) {
-//        void (^completionHandler)(void) = rs[@"completionHandler"];
-//        PKPushPayload* payload = rs[@"payload"];
-//        NSString* callbackKey = [self newCallbackWithBlock:^(id result) {
-//            completionHandler();
-//        }];
-//
-//        NSString* extraKey = nil;
-//        if (g_pushKitHandler) {
-//            if (self.verbose) NSLog(@"ReactNativeMoPushNotification.handle call g_pushKitHandler");
-//            extraKey = g_pushKitHandler(payload);
-//        }
-//
-//        [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
-//            @"type": @"didReceiveIncomingPush",
-//            @"pushType": rs[@"pushType"],
-//            @"payload": payload.dictionaryPayload,
-//            @"callbackKey": callbackKey,
-//            @"extraKey": RCTNullIfNil(extraKey),
-//        }];
-//
-//        sleep(1);
-//
     } else {
         NSLog(@"ReactNativeMoPushNotification received unknown %@", rs[@"type"]);
         
@@ -551,7 +510,7 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    NSLog(@"XXX didReceiveRemoteNotification");
+    NSLog(@"XXX didReceiveRemoteNotification ReactNativeMoPushNotification");
     [ReactNativeMoPushNotification didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
