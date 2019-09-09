@@ -81,7 +81,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
         [self didFinishLaunchingWithOptions:nil];
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:));
-        methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:));
+//        methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:));
         appDelegate = RCTSharedApplication().delegate;
         [UIApplication sharedApplication].delegate = nil;
         RCTSharedApplication().delegate = appDelegate;
@@ -484,16 +484,6 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     [[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:categories];
 }
 
-//RCT_EXPORT_METHOD(pushKitInit:(NSArray*)types) {
-//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.pushKitInit %@", types);
-//    self.pushRegistry = [[PKPushRegistry alloc] initWithQueue:nil];
-//    self.pushRegistry.desiredPushTypes = [NSSet setWithArray:types];
-//    self.pushRegistry.delegate = self;
-//}
-
-
-
-
 + (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (![UNUserNotificationCenter currentNotificationCenter].delegate) {
         static ReactNativeMoPushNotification* staticDelegate;
@@ -525,17 +515,15 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     }];
 }
 
-
-
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    NSLog(@"XXX willPresentNotification");
     [ReactNativeMoPushNotification willPresentNotification:notification withCompletionHandler:completionHandler];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+    NSLog(@"XXX didReceiveNotificationResponse");
     [ReactNativeMoPushNotification didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
-
-
 
 + (void)willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
     [self addToNotificationQueue:@{
@@ -553,38 +541,6 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     }];
 }
 
-//+ (void)setPushKitHandler:(NSString*(^)(PKPushPayload* payload))handler {
-//    g_pushKitHandler = handler;
-//}
-
-// pushRegistry delegate
-//- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)pushCredentials forType:(PKPushType)type {
-//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didUpdatePushCredentials %@ %@", pushCredentials, type);
-//    [ReactNativeMoPushNotification addToNotificationQueue:@{
-//        @"type": @"didUpdatePushCredentials",
-//        @"pushCredentials": pushCredentials,
-//        @"pushType": type,
-//    }];
-//}
-//
-//- (void)pushRegistry:(PKPushRegistry *)registry didInvalidatePushTokenForType:(PKPushType)type {
-//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didInvalidatePushTokenForType %@", type);
-//    [ReactNativeMoPushNotification addToNotificationQueue:@{
-//        @"type": @"didInvalidatePushToken",
-//        @"pushType": type,
-//    }];
-//}
-//
-//- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
-//    if (self.verbose) NSLog(@"ReactNativeMoPushNotification.didReceiveIncomingPushWithPayload %@ %@", payload, type);
-//    [ReactNativeMoPushNotification addToNotificationQueue:@{
-//        @"type": @"didReceiveIncomingPush",
-//        @"payload": payload,
-//        @"pushType": type,
-//        @"completionHandler": completion,
-//    }];
-//}
-
 // swizzled
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [ReactNativeMoPushNotification didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -595,6 +551,7 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    NSLog(@"XXX didReceiveRemoteNotification");
     [ReactNativeMoPushNotification didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
