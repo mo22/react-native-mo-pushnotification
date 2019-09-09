@@ -14,10 +14,7 @@
 - send notification
   - extra page?
 
-- remove notifications?
-
-- show interaction? -- switch
-
+- initial interaction?
 
 ## Usage
 
