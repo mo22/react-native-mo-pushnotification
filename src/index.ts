@@ -291,6 +291,7 @@ export class PushNotification {
   // @TODO: only on subscribe etc.
   public static init() {
     if (ios.Module) {
+      console.log('XXX init');
       const convertNotification = (rs: ios.DeliveredNotification): PushNotificationNotification => {
         const data: any = { ...rs.userInfo };
         delete data.aps;
@@ -307,6 +308,7 @@ export class PushNotification {
         if (this.verbose) console.log('ReactNativeMoPushNotification event', rs);
 
         if (rs.type === 'didReceiveRemoteNotification') {
+          console.log('XXX didReceiveRemoteNotification');
           const data = { ...rs.userInfo };
           delete data.aps;
           // @TODO: what else?

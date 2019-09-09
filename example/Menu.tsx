@@ -28,6 +28,7 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
     releaseOnWillUnmount(this, PushNotification.onInteraction.subscribe((event) => {
       console.log('onInteraction', event);
       Alert.alert('Interaction', event.title + ' ' + event.action);
+      this.updateActiveNotifications();
     }));
 
     releaseOnWillUnmount(this, PushNotification.onNotification.subscribe((event) => {
