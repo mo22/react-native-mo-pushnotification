@@ -50,16 +50,4 @@
 #endif
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-  NSLog(@"didReceiveRemoteNotification:fetchCompletionHandler");
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-  NSLog(@"didReceiveRemoteNotification:userInfo");
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-  NSLog(@"didReceiveLocalNotification");
-}
-
 @end
