@@ -112,13 +112,20 @@ export async function sendpush(token: PushNotificationToken, data: { title?: str
 
 if (require.main === module) {
   (async () => {
-    const token: PushNotificationToken = (
+    const token1: PushNotificationToken = (
       { type: 'ios-dev',
         token: '3E7F9B9ABBDB5C66C4685B2635E803E7A26E85A456A50A8B3E4C5D4DA5084942',
         id: 'de.mxs.reactnativemopushnotification.example',
         locale: 'en-DE' }
     );
-    await sendpush(token, { message: 'message' });
+    const token2: PushNotificationToken = (
+      { token: 'cm9yOjXlaAc:APA91bGFzcro4N6bEp_TT-zE9izPGIdOceGS-dOCv8_Bd9xEYsbOvnxLkqivuZcMXCnHFU7Zjk-rx5DnlDlxdIm5spvAltXx8cYC_p3Ed04ykoPBj1h1lpJHKiV9tNLJdze6KolCvZ8y',
+            type: 'android-fcm',
+            id: 'de.mxs.reactnativemopushnotification.example',
+            locale: 'de-DE' }
+    );
+    await sendpush(token1, { message: 'message' });
+    await sendpush(token2, { message: 'message' });
     process.exit(0);
   })().catch(console.error);
 }

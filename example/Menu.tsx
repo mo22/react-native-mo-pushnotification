@@ -11,6 +11,7 @@ interface State {
   permissions?: string;
   token?: string;
   allowShowNotification?: boolean;
+  activeNotifications?: number;
 }
 
 export default class Menu extends React.PureComponent<NavigationInjectedProps, State> {
@@ -25,8 +26,21 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
     };
 
     releaseOnWillUnmount(this, PushNotification.onInteraction.subscribe((event) => {
+      console.log('onInteraction', event);
       Alert.alert('Interaction', event.title + ' ' + event.action);
     }));
+
+    releaseOnWillUnmount(this, PushNotification.onNotification.subscribe((event) => {
+      console.log('onNotification', event);
+      setTimeout(() => this.updateActiveNotifications(), 1000);
+    }));
+
+    this.updateActiveNotifications();
+  }
+
+  private async updateActiveNotifications() {
+    const notifications = await PushNotification.getNotifications();
+    this.setState({ activeNotifications: notifications.length });
   }
 
   public render() {
@@ -67,12 +81,23 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
 
         <ListItem
           title="allowShowNotification"
-          chevron={true}
           switch={{
             value: this.state.allowShowNotification || false,
             onValueChange: (value) => {
               this.setState({ allowShowNotification: value });
             },
+          }}
+        />
+
+        <ListItem
+          title="active notifications"
+          rightTitle={'' + (this.state.activeNotifications || 0)}
+          onPress={async () => {
+            const notifications = await PushNotification.getNotifications();
+            for (const notification of notifications) {
+              await PushNotification.removeNotification(notification.id);
+            }
+            this.updateActiveNotifications();
           }}
         />
 
