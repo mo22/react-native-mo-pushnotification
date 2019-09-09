@@ -114,9 +114,9 @@ if (require.main === module) {
   (async () => {
     const token: PushNotificationToken = (
       { type: 'ios-dev',
-  token: 'A1D569686922E810040155AD092B1A5EF022A244A63EC42E872E84CB4CD4B47F',
-  id: 'de.mxs.reactnativemopushnotification.example',
-  locale: 'en-DE' }
+        token: '3E7F9B9ABBDB5C66C4685B2635E803E7A26E85A456A50A8B3E4C5D4DA5084942',
+        id: 'de.mxs.reactnativemopushnotification.example',
+        locale: 'en-DE' }
     );
     await sendpush(token, { message: 'message' });
     process.exit(0);

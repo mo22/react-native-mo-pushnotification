@@ -5321,6 +5321,13 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha512-tJBzzzIgnnRfEm046qRcURvwQnZVXmuCbscxUO5RWrGTXpon2d4c8mI0D8WE6ydVIm29JiLB6+RslkIvym9Rjw==
 
+react-mo-core@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-mo-core/-/react-mo-core-0.1.0.tgz#51e75c8a5bd0c7a2a26a0e8bd37fa12aca993c3b"
+  integrity sha512-yB702cuWw8vCcaCFatjA04ABTz4GqJKvPZNPqvhb/IJrDVlS8dOWuerIVYYdeH8EpPFXPKwi+UCayJtxqXRI8A==
+  dependencies:
+    mo-core "^0.1.1"
+
 react-native-elements@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-1.2.0.tgz#37f2562ca227d79dcb97ce0d869600f371041318"

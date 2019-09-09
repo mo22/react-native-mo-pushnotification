@@ -9,9 +9,14 @@
 
 ## TODO
 - show local notifications
-- remove notifications
-- show interaction...
-- send notification?
+  - extra page?
+
+- send notification
+  - extra page?
+
+- remove notifications?
+
+- show interaction? -- switch
 
 
 ## Usage
