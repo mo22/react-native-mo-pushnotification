@@ -4,6 +4,8 @@
 
 @interface ReactNativeMoPushNotification : RCTEventEmitter
 
++ (BOOL)isDevEnvironment;
+
 // do the setup automagically
 + (void)setup;
 

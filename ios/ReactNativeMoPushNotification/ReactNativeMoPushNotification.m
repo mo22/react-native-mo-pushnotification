@@ -141,7 +141,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
 
 
 
-- (BOOL)isDevEnvironment {
++ (BOOL)isDevEnvironment {
     NSString* path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"embedded.mobileprovision"];
     NSString* tmp = [NSString stringWithContentsOfFile:path encoding:NSASCIIStringEncoding error:nil];
     if (tmp && [tmp containsString:@"<key>aps-environment</key>\n\t\t<string>development</string>"]) {
@@ -209,7 +209,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
         [self sendEventWithName:@"ReactNativeMoPushNotification" body:@{
             @"type": @"didRegisterForRemoteNotificationsWithDeviceToken",
             @"deviceToken": [self dataToHex:deviceToken],
-            @"isDevEnvironment": @([self isDevEnvironment]),
+            @"isDevEnvironment": @([[self class] isDevEnvironment]),
             @"bundle": [[NSBundle mainBundle] bundleIdentifier],
             @"locale": [[NSLocale preferredLanguages] firstObject],
         }];
