@@ -77,7 +77,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
 + (void)setup {
     static id<UIApplicationDelegate> appDelegate;
     if (appDelegate == nil) {
-        NSLog(@"XXX setup");
         [self didFinishLaunchingWithOptions:nil];
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:));
@@ -452,7 +451,6 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSLog(@"XXX didRegisterForRemoteNotificationsWithDeviceToken");
     [self addToNotificationQueue:@{
         @"type": @"didRegisterForRemoteNotificationsWithDeviceToken",
         @"deviceToken": deviceToken,
@@ -475,12 +473,10 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
-    NSLog(@"XXX willPresentNotification");
     [ReactNativeMoPushNotification willPresentNotification:notification withCompletionHandler:completionHandler];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
-    NSLog(@"XXX didReceiveNotificationResponse");
     [ReactNativeMoPushNotification didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 
@@ -510,7 +506,6 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    NSLog(@"XXX didReceiveRemoteNotification ReactNativeMoPushNotification");
     [ReactNativeMoPushNotification didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
