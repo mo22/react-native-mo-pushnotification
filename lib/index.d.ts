@@ -82,6 +82,9 @@ export declare class PushNotification {
     private static verbose;
     private static currentToken?;
     private static androidKnownNotifications;
+    /**
+     * be verbose
+     */
     static setVerbose(verbose: boolean): void;
     /**
      * set the application's badge

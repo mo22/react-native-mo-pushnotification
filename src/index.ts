@@ -105,6 +105,9 @@ export class PushNotification {
   private static currentToken?: PushNotificationToken;
   private static androidKnownNotifications: { [id: number]: PushNotificationNotification } = {};
 
+  /**
+   * be verbose
+   */
   public static setVerbose(verbose: boolean) {
     this.verbose = verbose;
     if (ios.Module) {
@@ -202,7 +205,7 @@ export class PushNotification {
    * request notification token
    */
   public static async requestToken(): Promise<PushNotificationToken> {
-    console.log('requestToken');
+    if (this.verbose) console.log('ReactNativeMoPushNotification', 'requestToken');
     if (ios.Module) {
       if (!this.currentToken) {
         if (await this.requestPermission() !== 'granted') {
@@ -291,7 +294,6 @@ export class PushNotification {
   // @TODO: only on subscribe etc.
   public static init() {
     if (ios.Module) {
-      console.log('XXX init');
       const convertNotification = (rs: ios.DeliveredNotification): PushNotificationNotification => {
         const data: any = { ...rs.userInfo };
         delete data.aps;
