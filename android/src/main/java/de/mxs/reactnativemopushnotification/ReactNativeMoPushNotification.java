@@ -475,10 +475,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void startMainActivity() {
+        if (this.verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity");
         Intent intent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
         if (intent == null) throw new RuntimeException("getLaunchIntentForPackage null");
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        if (this.verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity start");
+        // @TODO: does not work in android Q
         getReactApplicationContext().startActivity(intent);
     }
 
