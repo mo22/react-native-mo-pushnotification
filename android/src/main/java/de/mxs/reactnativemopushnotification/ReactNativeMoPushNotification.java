@@ -614,6 +614,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             WritableMap args = Arguments.createMap();
             args.putString("type", "onNotificationClicked");
             args.putInt("id", bundle.getInt("id", 0));
+            if (bundle.containsKey("action")) args.putString("action", bundle.getString("action"));
             if (notification != null) {
                 this.notificationToMap(notification, args);
             }

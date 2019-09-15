@@ -414,7 +414,7 @@ export class PushNotification {
               badge: rs.number,
               color: rs.color,
               data: rs.data,
-              action: 'default',
+              action: rs.action || 'default',
             });
           }
 
