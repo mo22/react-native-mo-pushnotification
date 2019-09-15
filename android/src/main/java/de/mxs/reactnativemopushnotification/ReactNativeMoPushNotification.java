@@ -55,8 +55,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private final static int REQUEST_CODE = 4328;
     private static int notificationIDCounter = 1;
+    private static int requestIDCounter = 1;
     private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
     private boolean verbose = false;
 
@@ -369,7 +369,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         for (String key : bundle.keySet()) {
             Log.i("XXX", "- " + key + "=[" + bundle.get(key) + "]");
         }
-        return PendingIntent.getActivity(getReactApplicationContext(), REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        requestIDCounter++;
+        if (requestIDCounter == 65536) requestIDCounter = 1;
+        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @SuppressWarnings("unused")
@@ -499,6 +501,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
+                bundle.putInt("test", i);
                 PendingIntent pendingIntent = createPendingIntent(bundle);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
                 if (action.hasKey("icon")) {
