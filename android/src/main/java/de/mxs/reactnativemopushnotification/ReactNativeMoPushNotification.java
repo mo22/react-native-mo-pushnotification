@@ -507,10 +507,8 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 }
                 CharSequence title;
                 if (action.hasKey("html")) {
-                    Log.i("XXX", "has html");
-                    title = HtmlCompat.fromHtml("<font color=\"#ff0000\">" + action.getString("html") + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY);
+                    title = HtmlCompat.fromHtml(action.getString("html"), HtmlCompat.FROM_HTML_MODE_LEGACY);
                 } else {
-                    Log.i("XXX", "use title");
                     title = Objects.requireNonNull(action.getString("title"));
                 }
                 Log.i("XXX", "action " + i + " title [" + title + "]");
