@@ -498,7 +498,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
-                Log.i("XXX", "create action " + i + " " + action.getString("id"));
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -507,11 +506,10 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 }
                 CharSequence title;
                 if (action.hasKey("html")) {
-                    title = HtmlCompat.fromHtml(action.getString("html"), HtmlCompat.FROM_HTML_MODE_LEGACY);
+                    title = HtmlCompat.fromHtml(Objects.requireNonNull(action.getString("html")), HtmlCompat.FROM_HTML_MODE_LEGACY);
                 } else {
                     title = Objects.requireNonNull(action.getString("title"));
                 }
-                Log.i("XXX", "action " + i + " title [" + title + "]");
                 NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(
                         iconID,
                         title,
