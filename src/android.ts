@@ -50,6 +50,8 @@ export interface Notification {
   groupKey?: string;
   smallIcon?: string;
   autoCancel?: boolean;
+  fullScreen?: boolean;
+  actions?: {}[];
   data?: { [k: string]: string|number|boolean };
 }
 
