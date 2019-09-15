@@ -54,7 +54,7 @@ export interface Notification {
         id: string;
         title: string;
         icon?: string;
-        semanticAction?: string;
+        semanticAction?: number;
         allowGeneratedReplies?: boolean;
         showsUserInterface?: boolean;
     }[];
