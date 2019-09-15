@@ -38,6 +38,8 @@ export declare enum PushNotificationPermissionStatus {
     DENIED = "denied",
     UNKNOWN = "unknown"
 }
+export declare const IosCategoryOptions: typeof ios.CategoryOptions;
+export declare const IosCategoryActionOptions: typeof ios.CategoryActionOptions;
 export declare class PushNotification {
     /**
      * native ios functions. use with caution

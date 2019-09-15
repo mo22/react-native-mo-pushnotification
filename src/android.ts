@@ -51,7 +51,7 @@ export interface Notification {
   smallIcon?: string;
   autoCancel?: boolean;
   fullScreen?: boolean;
-  actions?: {}[];
+  actions?: { id: string; title: string; icon?: string; semanticAction?: string; allowGeneratedReplies?: boolean; showsUserInterface?: boolean; }[];
   data?: { [k: string]: string|number|boolean };
 }
 

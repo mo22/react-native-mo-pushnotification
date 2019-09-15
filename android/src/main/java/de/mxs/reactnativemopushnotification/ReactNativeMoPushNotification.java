@@ -479,12 +479,24 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 Bundle bundle = new Bundle(baseBundle);
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);
-
-                // icon?
-                // title?
-                NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(R.drawable.common_full_open_on_phone, "delete", pendingIntent);
-                // semantic?
-                actionBuilder.setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE);
+                int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
+                if (action.hasKey("icon")) {
+                    iconID = resources.getIdentifier(action.getString("icon"), "mipmap", packageName);
+                }
+                NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(
+                        iconID,
+                        action.getString("title"),
+                        pendingIntent
+                );
+                if (action.hasKey("semanticAction")) {
+                    actionBuilder.setSemanticAction(action.getInt("semanticAction"));
+                }
+                if (action.hasKey("allowGeneratedReplies")) {
+                    actionBuilder.setAllowGeneratedReplies(action.getBoolean("allowGeneratedReplies"));
+                }
+                if (action.hasKey("showsUserInterface")) {
+                    actionBuilder.setShowsUserInterface(action.getBoolean("showsUserInterface"));
+                }
                 builder.addAction(actionBuilder.build());
             }
         }

@@ -33,6 +33,7 @@ export interface Notification {
     body?: string;
     vibrate?: number[];
     priority?: Priority;
+    category?: 'call' | 'navigation' | 'msg' | 'email' | 'event' | 'promo' | 'alarm' | 'progress' | 'social' | 'err' | 'transport' | 'sys' | 'service' | 'recommendation' | 'status' | 'reminder' | 'car_emergency' | 'car_warning' | 'car_information';
     number?: number;
     colorized?: boolean;
     visibility?: Visibility;
@@ -48,6 +49,15 @@ export interface Notification {
     groupKey?: string;
     smallIcon?: string;
     autoCancel?: boolean;
+    fullScreen?: boolean;
+    actions?: {
+        id: string;
+        title: string;
+        icon?: string;
+        semanticAction?: string;
+        allowGeneratedReplies?: boolean;
+        showsUserInterface?: boolean;
+    }[];
     data?: {
         [k: string]: string | number | boolean;
     };
