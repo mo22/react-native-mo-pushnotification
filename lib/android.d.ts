@@ -118,6 +118,7 @@ export declare type Event = {
 } | {
     type: 'onNotificationClicked';
     id: number;
+    action?: string;
     title: string | null;
     subtext: string | null;
     body: string | null;
