@@ -506,9 +506,11 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                     iconID = resources.getIdentifier(action.getString("icon"), "mipmap", packageName);
                 }
                 CharSequence title;
-                if (args.hasKey("html")) {
+                if (action.hasKey("html")) {
+                    Log.i("XXX", "has html");
                     title = HtmlCompat.fromHtml("<font color=\"#ff0000\">" + action.getString("html") + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY);
                 } else {
+                    Log.i("XXX", "use title");
                     title = Objects.requireNonNull(action.getString("title"));
                 }
                 Log.i("XXX", "action " + i + " title [" + title + "]");
