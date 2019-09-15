@@ -53,7 +53,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private static int REQUEST_CODE = 4328;
+    private final static int REQUEST_CODE = 4328;
     private static int notificationIDCounter = 1;
     private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
     private boolean verbose = false;
@@ -337,6 +337,21 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
     }
 
+    private Bundle createBundleForNotification(ReadableMap args, NotificationCompat.Builder builder, int notificationID) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", notificationID);
+        if (args.hasKey("data")) {
+            ReadableMap a = args.getMap("data");
+            if (a != null) {
+                Bundle b = new Bundle();
+                this.readableMapToBundle(a, b);
+                bundle.putBundle("data", b);
+            }
+        }
+        bundle.putParcelable("notification", builder.build()); // ??
+        return bundle;
+    }
+
     private PendingIntent createPendingIntent(Bundle bundle) {
         Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
         if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
@@ -460,24 +475,16 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             builder.setAutoCancel(true); // removed if tapped
         }
 
-        Bundle baseBundle = new Bundle();
-        baseBundle.putInt("id", notificationID);
-        if (args.hasKey("data")) {
-            ReadableMap a = args.getMap("data");
-            if (a != null) {
-                Bundle b = new Bundle();
-                this.readableMapToBundle(a, b);
-                baseBundle.putBundle("data", b);
-            }
+        {
+            Bundle bundle = createBundleForNotification(args, builder, notificationID);
+            builder.setContentIntent(createPendingIntent(bundle));
         }
-        baseBundle.putParcelable("notification", builder.build()); // ??
-        builder.setContentIntent(createPendingIntent(baseBundle));
 
         if (args.hasKey("actions")) {
             ReadableArray actions = Objects.requireNonNull(args.getArray("actions"));
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
-                Bundle bundle = new Bundle(baseBundle);
+                Bundle bundle = createBundleForNotification(args, builder, notificationID);
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -503,7 +510,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
 
         if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
-            Bundle bundle = new Bundle(baseBundle);
+            Bundle bundle = createBundleForNotification(args, builder, notificationID);
             bundle.putString("action", "fullScreen");
             PendingIntent pendingIntent = createPendingIntent(bundle);
             builder.setFullScreenIntent(pendingIntent, true);
