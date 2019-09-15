@@ -480,6 +480,13 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             builder.setContentIntent(createPendingIntent(bundle));
         }
 
+        if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
+            Bundle bundle = createBundleForNotification(args, builder, notificationID);
+            bundle.putString("action", "fullScreen");
+            PendingIntent pendingIntent = createPendingIntent(bundle);
+            builder.setFullScreenIntent(pendingIntent, true);
+        }
+
         if (args.hasKey("actions")) {
             ReadableArray actions = Objects.requireNonNull(args.getArray("actions"));
             for (int i=0; i<actions.size(); i++) {
@@ -507,13 +514,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 }
                 builder.addAction(actionBuilder.build());
             }
-        }
-
-        if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
-            Bundle bundle = createBundleForNotification(args, builder, notificationID);
-            bundle.putString("action", "fullScreen");
-            PendingIntent pendingIntent = createPendingIntent(bundle);
-            builder.setFullScreenIntent(pendingIntent, true);
         }
 
         notificationManager.notify(notificationID, builder.build());
