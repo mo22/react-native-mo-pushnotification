@@ -25,6 +25,8 @@ import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import androidx.core.app.NotificationCompat;
 import androidx.core.os.ConfigurationCompat;
+import androidx.core.text.HtmlCompat;
+
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -498,9 +500,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 if (action.hasKey("icon")) {
                     iconID = resources.getIdentifier(action.getString("icon"), "mipmap", packageName);
                 }
+
+                CharSequence title = action.getString("title");
+                title = HtmlCompat.fromHtml("<font color=\"#ff0000\">" + title + "</font>", HtmlCompat.FROM_HTML_MODE_LEGACY);
                 NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(
                         iconID,
-                        action.getString("title"),
+                        title,
                         pendingIntent
                 );
                 if (action.hasKey("semanticAction")) {
