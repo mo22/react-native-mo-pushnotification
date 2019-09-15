@@ -365,6 +365,10 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
+        Log.i("XXX", "createPendingIntent bundle:");
+        for (String key : bundle.keySet()) {
+            Log.i("XXX", "- " + key + "=[" + bundle.get(key) + "]");
+        }
         return PendingIntent.getActivity(getReactApplicationContext(), REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
