@@ -50,17 +50,19 @@ export interface Notification {
     smallIcon?: string;
     autoCancel?: boolean;
     fullScreen?: boolean;
-    actions?: ({
+    actions?: (({
         title: string;
     } | {
         html: string;
     }) & {
         id: string;
+        title?: string;
+        html?: string;
         icon?: string;
         semanticAction?: number;
         allowGeneratedReplies?: boolean;
         showsUserInterface?: boolean;
-    }[];
+    })[];
     data?: {
         [k: string]: string | number | boolean;
     };
