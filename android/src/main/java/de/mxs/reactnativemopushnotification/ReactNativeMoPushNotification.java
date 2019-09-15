@@ -389,6 +389,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         } else {
             builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         }
+        if (args.hasKey("category")) {
+            builder.setCategory(args.getString("category"));
+        }
         if (args.hasKey("number")) {
             builder.setNumber(args.getInt("number"));
         }
@@ -467,6 +470,8 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         intent.putExtra("ReactNativeMoPushNotification", bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(getReactApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
+
+        builder.setFullScreenIntent(pendingIntent, true);
 
         notificationManager.notify(notificationID, builder.build());
         promise.resolve(notificationID);
