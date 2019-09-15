@@ -338,6 +338,20 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
     }
 
+    private PendingIntent createPendingIntent(Bundle bundle) {
+        Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
+        if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
+        Intent intent;
+        try {
+            intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("launchIntent class not found", e);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("ReactNativeMoPushNotification", bundle);
+        return PendingIntent.getActivity(getReactApplicationContext(), 4321, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
     @SuppressWarnings("unused")
     @ReactMethod
     public void showNotification(ReadableMap args, Promise promise) throws Exception {
@@ -452,27 +466,70 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             builder.setAutoCancel(true); // removed if tapped
         }
 
-        Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
-        if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
-        Intent intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", notificationID);
+        Bundle baseBundle = new Bundle();
+        baseBundle.putInt("id", notificationID);
         if (args.hasKey("data")) {
             ReadableMap a = args.getMap("data");
             if (a != null) {
                 Bundle b = new Bundle();
                 this.readableMapToBundle(a, b);
-                bundle.putBundle("data", b);
+                baseBundle.putBundle("data", b);
             }
-            bundle.putParcelable("notification", builder.build()); // ??
         }
-        intent.putExtra("ReactNativeMoPushNotification", bundle);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getReactApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
+//        bundle.putParcelable("notification", builder.build()); // ??
 
-        // @TODO ??
-        builder.setFullScreenIntent(pendingIntent, true);
+        {
+            Bundle bundle = new Bundle(baseBundle);
+            bundle.putString("action", "delete");
+            PendingIntent pendingIntent = createPendingIntent(bundle);
+            NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(R.drawable.common_full_open_on_phone, "delete", pendingIntent);
+            actionBuilder.setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE);
+            builder.addAction(actionBuilder.build());
+        }
+
+        {
+            Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
+            if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
+            Intent intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", notificationID);
+            if (args.hasKey("data")) {
+                ReadableMap a = args.getMap("data");
+                if (a != null) {
+                    Bundle b = new Bundle();
+                    this.readableMapToBundle(a, b);
+                    bundle.putBundle("data", b);
+                }
+                bundle.putParcelable("notification", builder.build()); // ??
+            }
+            intent.putExtra("ReactNativeMoPushNotification", bundle);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getReactApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+        }
+
+        {
+            // @TODO: createPendingIntentWithBundle()
+            Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
+            if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
+            Intent intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", notificationID);
+            if (args.hasKey("data")) {
+                ReadableMap a = args.getMap("data");
+                if (a != null) {
+                    Bundle b = new Bundle();
+                    this.readableMapToBundle(a, b);
+                    bundle.putBundle("data", b);
+                }
+                bundle.putString("action", "fullscreen");
+                bundle.putParcelable("notification", builder.build()); // ??
+            }
+            intent.putExtra("ReactNativeMoPushNotification", bundle);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getReactApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setFullScreenIntent(pendingIntent, true);
+        }
 
         notificationManager.notify(notificationID, builder.build());
         promise.resolve(notificationID);
