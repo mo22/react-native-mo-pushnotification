@@ -471,6 +471,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         PendingIntent pendingIntent = PendingIntent.getActivity(getReactApplicationContext(), notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
+        // @TODO ??
         builder.setFullScreenIntent(pendingIntent, true);
 
         notificationManager.notify(notificationID, builder.build());
