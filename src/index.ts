@@ -46,9 +46,8 @@ export enum PushNotificationPermissionStatus {
   UNKNOWN = 'unknown',
 }
 
-export type IosCategoryOptions = ios.CategoryOptions;
-export type IosCategoryAction = ios.CategoryAction;
-export type IosCategoryActionOptions = ios.CategoryActionOptions;
+export const IosCategoryOptions = ios.CategoryOptions;
+export const IosCategoryActionOptions = ios.CategoryActionOptions;
 
 export class PushNotification {
   /**
