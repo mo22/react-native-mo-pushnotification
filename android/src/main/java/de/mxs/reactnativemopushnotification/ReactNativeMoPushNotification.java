@@ -53,6 +53,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
+    private static int REQUEST_CODE = 4328;
     private static int notificationIDCounter = 1;
     private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
     private boolean verbose = false;
@@ -347,7 +348,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
-        return PendingIntent.getActivity(getReactApplicationContext(), 4321, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getReactApplicationContext(), REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @SuppressWarnings("unused")
@@ -380,20 +381,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             }
         }
 
-        Bundle baseBundle = new Bundle();
-        baseBundle.putInt("id", notificationID);
-        if (args.hasKey("data")) {
-            ReadableMap a = args.getMap("data");
-            if (a != null) {
-                Bundle b = new Bundle();
-                this.readableMapToBundle(a, b);
-                baseBundle.putBundle("data", b);
-            }
-        }
-//        bundle.putParcelable("notification", builder.build()); // ??
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getReactApplicationContext(), channelID);
-        builder.setContentIntent(createPendingIntent(baseBundle));
         if (args.hasKey("title")) {
             builder.setContentTitle(args.getString("title"));
         }
@@ -471,6 +459,19 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         } else {
             builder.setAutoCancel(true); // removed if tapped
         }
+
+        Bundle baseBundle = new Bundle();
+        baseBundle.putInt("id", notificationID);
+        if (args.hasKey("data")) {
+            ReadableMap a = args.getMap("data");
+            if (a != null) {
+                Bundle b = new Bundle();
+                this.readableMapToBundle(a, b);
+                baseBundle.putBundle("data", b);
+            }
+        }
+        baseBundle.putParcelable("notification", builder.build()); // ??
+        builder.setContentIntent(createPendingIntent(baseBundle));
 
         if (args.hasKey("actions")) {
             ReadableArray actions = Objects.requireNonNull(args.getArray("actions"));
