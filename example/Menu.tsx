@@ -110,6 +110,31 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
           }}
         />
 
+        <ListItem
+          title="test"
+          chevron={true}
+          onPress={() => {
+            PushNotification.showNotification({
+              body: 'body text',
+              title: 'title text',
+              subtitle: 'subtitle text',
+              ios: {
+                categoryIdentifier: 'test1',
+              },
+              android: {
+                category: 'call',
+                smallIcon: 'ic_notification',
+                channelID: 'channel1',
+                // fullScreen: true,
+                actions: [
+                  { id: 'action1', html: '<font color="#00ff00">Action 1</font>', semanticAction: 10 },
+                  { id: 'action2', title: 'Action 2' },
+                ],
+              },
+            });
+          }}
+        />
+
       </ScrollView>
     );
   }
