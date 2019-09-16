@@ -6,9 +6,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -363,15 +360,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("launchIntent class not found", e);
         }
+        // create pendingintent for service or something?
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
-        Log.i("XXX", "createPendingIntent bundle:");
-        for (String key : bundle.keySet()) {
-            Log.i("XXX", "- " + key + "=[" + bundle.get(key) + "]");
-        }
         requestIDCounter++;
         if (requestIDCounter == 65536) requestIDCounter = 1;
-        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, 0);
     }
 
     @SuppressWarnings("unused")
@@ -501,7 +495,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
-                bundle.putInt("test", i);
                 PendingIntent pendingIntent = createPendingIntent(bundle);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
                 if (action.hasKey("icon")) {
@@ -564,19 +557,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         PowerManager.WakeLock wakeLock = this.wakeLocks.remove(key);
         if (wakeLock == null) return;
         wakeLock.release();
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void testWorkManager() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            final JobScheduler jobScheduler = Objects.requireNonNull((JobScheduler)getReactApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE));
-            JobInfo.Builder builder = new JobInfo.Builder(123, new ComponentName(getReactApplicationContext(), ReactNativeMoPushNotificationJobService.class));
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-            builder.setPeriodic(1000 * 60);
-            jobScheduler.schedule(builder.build());
-        }
-
     }
 
     @Override

@@ -123,9 +123,10 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
               },
               android: {
                 category: 'call',
-                smallIcon: 'ic_notification',
-                channelID: 'channel1',
-                // fullScreen: true,
+                // smallIcon: 'ic_notification',
+                // channelID: 'channel1',
+                fullScreen: true,
+                ongoing: true,
                 actions: [
                   { id: 'action1', html: '<font color="#00ff00">Action 1</font>', semanticAction: 10 },
                   { id: 'action2', title: 'Action 2' },
