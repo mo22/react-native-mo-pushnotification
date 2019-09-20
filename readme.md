@@ -16,8 +16,6 @@
 
 - initial interaction?
 
-https://stackoverflow.com/questions/36433573/notification-action-without-starting-new-activity
-
 ## Usage
 
 ```ts
