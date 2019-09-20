@@ -76,8 +76,8 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
 
 + (void)setup {
     // @TODO: rename to swizzleApplication or something.
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
         [self didFinishLaunchingWithOptions:nil];
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
         methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:));
@@ -85,7 +85,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
         id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
 //        RCTSharedApplication().delegate = nil; // really?
         RCTSharedApplication().delegate = appDelegate;
-    });
+//    });
 }
 
 

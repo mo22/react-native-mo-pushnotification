@@ -352,20 +352,22 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     }
 
     private PendingIntent createPendingIntent(Bundle bundle) {
-        Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
-        if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
-        Intent intent;
-        try {
-            intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("launchIntent class not found", e);
-        }
-        // create pendingintent for service or something?
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
+//        if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
+//        Intent intent;
+//        try {
+//            intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException("launchIntent class not found", e);
+//        }
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        intent.putExtra("ReactNativeMoPushNotification", bundle);
+//        requestIDCounter++;
+//        if (requestIDCounter == 65536) requestIDCounter = 1;
+//        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, 0);
+        Intent intent = new Intent(getReactApplicationContext(), ReactNativeMoPushNotificationReceiver.class);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
-        requestIDCounter++;
-        if (requestIDCounter == 65536) requestIDCounter = 1;
-        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, 0);
+        return PendingIntent.getBroadcast(getReactApplicationContext(), 0, intent, 0);
     }
 
     @SuppressWarnings("unused")
