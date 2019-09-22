@@ -22,6 +22,7 @@ static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
 @end
 
 static BOOL g_verbose;
+static BOOL g_disableAutoSwizzle = NO;
 
 @interface ReactNativeMoPushNotification () <UNUserNotificationCenterDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString*, void (^)(id result)>* callbacks;
@@ -32,9 +33,15 @@ static BOOL g_verbose;
 
 RCT_EXPORT_MODULE()
 
++ (void)disableAutoSwizzle {
+    g_disableAutoSwizzle = YES;
+}
+
 + (BOOL)requiresMainQueueSetup {
     // this is called during application didFinishLaunchingWithOptions
-    [self swizzleDelegate];
+    if (!g_disableAutoSwizzle) {
+        [self swizzleDelegate];
+    }
     [self setupUserNotificationCenter];
     return YES;
 }
@@ -481,17 +488,25 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
     }];
 }
 
-// swizzled
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+- (void)swizzled_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [ReactNativeMoPushNotification didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    if ([self respondsToSelector:@selector(swizzled_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
+        [self swizzled_application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    }
 }
 
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+- (void)swizzled_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     [ReactNativeMoPushNotification didFailToRegisterForRemoteNotificationsWithError:error];
+    if ([self respondsToSelector:@selector(swizzled_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
+        [self swizzled_application:application didFailToRegisterForRemoteNotificationsWithError:error];
+    }
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+- (void)swizzled_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [ReactNativeMoPushNotification didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+    if ([self respondsToSelector:@selector(swizzled_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
+        [self swizzled_application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+    }
 }
 
 @end
