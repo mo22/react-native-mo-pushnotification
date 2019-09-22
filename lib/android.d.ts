@@ -62,6 +62,7 @@ export interface Notification {
         semanticAction?: number;
         allowGeneratedReplies?: boolean;
         showsUserInterface?: boolean;
+        background?: boolean;
     })[];
     data?: {
         [k: string]: string | number | boolean;

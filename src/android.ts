@@ -51,7 +51,21 @@ export interface Notification {
   smallIcon?: string;
   autoCancel?: boolean;
   fullScreen?: boolean;
-  actions?: (({ title: string; } | { html: string; }) & { id: string; title?: string; html?: string; icon?: string; semanticAction?: number; allowGeneratedReplies?: boolean; showsUserInterface?: boolean; })[];
+  actions?: (
+    ({
+      title: string;
+    } | {
+      html: string;
+    }) & {
+      id: string;
+      title?: string;
+      html?: string;
+      icon?: string;
+      semanticAction?: number;
+      allowGeneratedReplies?: boolean;
+      showsUserInterface?: boolean;
+      background?: boolean;
+    })[];
   data?: { [k: string]: string|number|boolean };
 }
 

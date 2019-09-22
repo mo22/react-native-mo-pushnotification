@@ -16,6 +16,7 @@ interface State {
 
 export default class Menu extends React.PureComponent<NavigationInjectedProps, State> {
   public state: State = {
+    allowShowNotification: true,
   };
 
   public async componentDidMount() {
@@ -129,7 +130,7 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
                 ongoing: true,
                 actions: [
                   { id: 'action1', html: '<font color="#00ff00">Action 1</font>', semanticAction: 10 },
-                  { id: 'action2', title: 'Action 2' },
+                  { id: 'action2', title: 'Action 2', background: true },
                 ],
               },
             });

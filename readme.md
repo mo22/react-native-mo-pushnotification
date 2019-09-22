@@ -10,11 +10,13 @@
 ## TODO
 - show local notifications
   - extra page?
-
 - send notification
   - extra page?
-
 - initial interaction?
+
+- android action background
+- ios swizzle setup like fs
+- this doc
 
 ## Usage
 
