@@ -1,6 +1,8 @@
 # react-native-mo-pushnotification
 
-## Setup
+## Installation
+Install just like your ordinary react-native module.
+
 - ios: need push notification capability
 - ios: in AppDelegate [ReactNativeMoPushNotification setup];
 
@@ -14,11 +16,11 @@
   - extra page?
 - initial interaction?
 
-- android action background
-- ios swizzle setup like fs
 - this doc
 
 ## Usage
+
+Please check the [example/](example/) code.
 
 ```ts
 ```
