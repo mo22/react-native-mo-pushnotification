@@ -20,7 +20,7 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
         Bundle data = bundle.getBundle("data");
         Notification notification = bundle.getParcelable("notification");
         if (ReactNativeMoPushNotification.verbose) {
-            Log.i("RNMoPushNotification", "onNewIntent ReactNativeMoPushNotification");
+            Log.i("RNMoPushNotification", "Receiver.sendEvent");
             for (String k : bundle.keySet()) {
                 Log.i("RNMoPushNotification", "[" + k + "] = " + bundle.get(k));
             }
@@ -53,6 +53,11 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
             Log.i("RNMoPushNotification", "Receiver.onReceive " + intent);
         }
         Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
+        if (ReactNativeMoPushNotification.verbose) {
+            for (String k : bundle.keySet()) {
+                Log.i("RNMoPushNotification", "[bundle." + k + "] = " + bundle.get(k));
+            }
+        }
 
         ReactInstanceManager reactInstanceManager = ((ReactApplication)context.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
         ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
