@@ -53,6 +53,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private static int notificationIDCounter = 1;
+    private static int requestIDCounter = 1;
     private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
     static boolean verbose = false;
 
@@ -356,7 +357,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     private PendingIntent createPendingIntent(Bundle bundle) {
         Intent intent = new Intent(getReactApplicationContext(), ReactNativeMoPushNotificationReceiver.class);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
-        return PendingIntent.getBroadcast(getReactApplicationContext(), 0, intent, 0);
+        requestIDCounter++;
+        if (requestIDCounter == 65536) requestIDCounter = 1;
+        return PendingIntent.getBroadcast(getReactApplicationContext(), requestIDCounter, intent, 0);
     }
 
     @SuppressWarnings("unused")
@@ -470,12 +473,14 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
         {
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
+            bundle.putString("xxx", "default intent");
             builder.setContentIntent(createPendingIntent(bundle));
         }
 
         if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
             bundle.putString("action", "fullScreen");
+            bundle.putString("xxx", "full screen intent");
             PendingIntent pendingIntent = createPendingIntent(bundle);
             builder.setFullScreenIntent(pendingIntent, true);
         }
@@ -485,9 +490,11 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
+                bundle.putString("xxx", "action intent");
                 if (action.hasKey("background")) {
                     Log.i("XXX", "action has background " + action.getBoolean("background"));
                     bundle.putBoolean("background", action.getBoolean("background"));
+                    bundle.putString("xxx", "background intent");
                 }
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);
