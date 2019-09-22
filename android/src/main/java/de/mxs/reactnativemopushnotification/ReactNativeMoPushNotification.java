@@ -486,6 +486,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
                 if (action.hasKey("background")) {
+                    Log.i("XXX", "action has background " + action.getBoolean("background"));
                     bundle.putBoolean("background", action.getBoolean("background"));
                 }
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));

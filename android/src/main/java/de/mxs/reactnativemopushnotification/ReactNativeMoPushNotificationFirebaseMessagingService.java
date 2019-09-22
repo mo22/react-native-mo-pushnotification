@@ -40,9 +40,7 @@ public final class ReactNativeMoPushNotificationFirebaseMessagingService extends
             if (reactContext != null) {
                 handleMessage(remoteMessage, reactContext);
             } else {
-                reactInstanceManager.addReactInstanceEventListener(reactContextNew -> {
-                    handleMessage(remoteMessage, reactContextNew);
-                });
+                reactInstanceManager.addReactInstanceEventListener(reactContextNew -> handleMessage(remoteMessage, reactContextNew));
                 if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
                     reactInstanceManager.createReactContextInBackground();
                 }

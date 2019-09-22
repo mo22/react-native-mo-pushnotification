@@ -59,9 +59,7 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
         if (reactContext != null) {
             sendEvent(reactContext, bundle);
         } else {
-            reactInstanceManager.addReactInstanceEventListener(reactContextNew -> {
-                sendEvent(reactContextNew, bundle);
-            });
+            reactInstanceManager.addReactInstanceEventListener(reactContextNew -> sendEvent(reactContextNew, bundle));
             if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
                 reactInstanceManager.createReactContextInBackground();
             }
