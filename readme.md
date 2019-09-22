@@ -1,6 +1,9 @@
 # react-native-mo-pushnotification
 
+Push Notifications
+
 ## Installation
+
 Install just like your ordinary react-native module.
 
 - ios: need push notification capability
