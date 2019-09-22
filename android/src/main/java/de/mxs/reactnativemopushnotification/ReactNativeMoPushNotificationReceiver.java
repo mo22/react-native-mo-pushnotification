@@ -15,15 +15,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.i("XXX", "ReactNativeMoPushNotificationReceiver " + intent);
-        Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
 
-        Log.i("XXX", "Test1");
-        ReactContext reactContext = (ReactContext)context;
-        Log.i("XXX", "Test2");
-
+    private void sendEvent(ReactContext reactContext, Bundle bundle) {
         Bundle data = bundle.getBundle("data");
         Notification notification = bundle.getParcelable("notification");
         if (ReactNativeMoPushNotification.verbose) {
@@ -52,14 +45,37 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
             ReactNativeMoPushNotification.notificationToMap(notification, args);
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (ReactNativeMoPushNotification.verbose) {
+            Log.i("RNMoPushNotification", "Receiver.onReceive " + intent);
+        }
+        Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
+
+        ReactInstanceManager reactInstanceManager = ((ReactApplication)context.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
+        ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
+        if (reactContext != null) {
+            sendEvent(reactContext, bundle);
+        } else {
+            reactInstanceManager.addReactInstanceEventListener(reactContextNew -> {
+                sendEvent(reactContextNew, bundle);
+            });
+            if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
+                reactInstanceManager.createReactContextInBackground();
+            }
+        }
 
         boolean background = bundle.getBoolean("background", false);
         if (!background) {
+            if (ReactNativeMoPushNotification.verbose) {
+                Log.i("RNMoPushNotification", "Receiver startActivity");
+            }
             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
             if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            launchIntent.putExtra("ReactNativeMoPushNotification", bundle);
             context.startActivity(launchIntent);
         }
     }

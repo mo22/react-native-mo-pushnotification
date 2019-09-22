@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
@@ -18,26 +20,28 @@ import java.util.Map;
 public final class ReactNativeMoPushNotificationFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
-    public void onNewToken(String s) {
+    public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        Log.i("XXX", "onNewToken " + s);
+        if (ReactNativeMoPushNotification.verbose) {
+            Log.i("RNMoPushNotification", "onNewToken " + s);
+        }
     }
 
     @Override
-    public void onMessageReceived(final RemoteMessage remoteMessage) {
+    public void onMessageReceived(final @NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.i("XXX", "onMessageReceived " + remoteMessage);
+        if (ReactNativeMoPushNotification.verbose) {
+            Log.i("RNMoPushNotification", "onMessageReceived " + remoteMessage);
+        }
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {
             ReactInstanceManager reactInstanceManager = ((ReactApplication)getApplication()).getReactNativeHost().getReactInstanceManager();
-            ReactContext context = reactInstanceManager.getCurrentReactContext();
-            if (context != null) {
-                handleMessage(remoteMessage, context);
+            ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
+            if (reactContext != null) {
+                handleMessage(remoteMessage, reactContext);
             } else {
-                Log.i("XXX", "create react context");
-                reactInstanceManager.addReactInstanceEventListener(context1 -> {
-                    Log.i("XXX", "context created");
-                    handleMessage(remoteMessage, context1);
+                reactInstanceManager.addReactInstanceEventListener(reactContextNew -> {
+                    handleMessage(remoteMessage, reactContextNew);
                 });
                 if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
                     reactInstanceManager.createReactContextInBackground();

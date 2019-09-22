@@ -13,6 +13,8 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.List;
 
+import de.mxs.reactnativemopushnotification.ReactNativeMoPushNotification;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -44,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    ReactNativeMoPushNotification.setGlobalVerbose(true);
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
