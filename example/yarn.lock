@@ -5347,10 +5347,10 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-pushnotification@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.4.tgz#abc5243716bfb459f3f8dbe8219fe0a9843bc4c0"
-  integrity sha512-f/DBaD2wWAwPcYDOUH9lBLPpyMWY8NNSvvIkXJfy+LFNTBAr2GyIculX9dCkRoQqrnlOo4cUqw0Scms8phlPiw==
+react-native-mo-pushnotification@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.5.tgz#e8eedcdf0670f282cc5442a03a4a72ea259f23d9"
+  integrity sha512-PumGiPJT0s6APD0IqkKvQ5qbILwpf6esW+NUZMfzvlgPxjuhMXv9UdLnTKjwGq0k7/7HLo0NojA9xT3C0expmg==
   dependencies:
     mo-core "^0.1.1"
 
