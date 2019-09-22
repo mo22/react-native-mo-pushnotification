@@ -574,11 +574,11 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @Override
     public void onHostResume() {
-        Activity activity = getReactApplicationContext().getCurrentActivity();
-        if (activity != null) {
-            Intent intent = activity.getIntent();
-            this.onNewIntent(intent);
-        }
+//        Activity activity = getReactApplicationContext().getCurrentActivity();
+//        if (activity != null) {
+//            Intent intent = activity.getIntent();
+//            this.onNewIntent(intent);
+//        }
     }
 
     @Override
