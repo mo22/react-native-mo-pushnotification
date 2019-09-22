@@ -295,10 +295,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void cancelNotification(int id) {
-//        Log.i("XXX", "cancelNotification " + id);
         NotificationManager notificationManager = Objects.requireNonNull((NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE));
         notificationManager.cancel(id);
-        notificationManager.cancel("test-tag", id); // this works?!
+//        notificationManager.cancel("test-tag", id); // this works?!
     }
 
     @SuppressWarnings("unused")
@@ -313,22 +312,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
                 rs.putInt("id", item.getId()); // returns 0 sometimes... then cancelNotification does not work...
                 rs.putBoolean("ongoing", !item.isClearable());
                 rs.putDouble("postTime", item.getPostTime());
-//                Log.i("XXX", "getNotifications---- " + item.getId() + " " + item.getTag());
-//                Bundle extras = notification.extras;
-//                for (String k : extras.keySet()) {
-//                    Log.i("XXX", "getNotifications extras " + k + " " + extras.get(k));
-//                    // no notification data fields here...
-//                }
-//                Log.i("XXX", "getNotifications contentIntent " + notification.contentIntent);
-//                if (notification.contentIntent != null) {
-//                    try {
-//                        Method getIntent = PendingIntent.class.getDeclaredMethod("getIntent");
-//                        Intent intent = (Intent)getIntent.invoke(notification.contentIntent);
-//                        Log.i("XXX", "getNotifications intent " + intent);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
                 notificationToMap(notification, rs);
                 res.pushMap(rs);
             }
@@ -473,14 +456,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
         {
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
-            bundle.putString("xxx", "default intent");
             builder.setContentIntent(createPendingIntent(bundle));
         }
 
         if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
             bundle.putString("action", "fullScreen");
-            bundle.putString("xxx", "full screen intent");
             PendingIntent pendingIntent = createPendingIntent(bundle);
             builder.setFullScreenIntent(pendingIntent, true);
         }
@@ -490,11 +471,8 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
-                bundle.putString("xxx", "action intent");
                 if (action.hasKey("background")) {
-                    Log.i("XXX", "action has background " + action.getBoolean("background"));
                     bundle.putBoolean("background", action.getBoolean("background"));
-                    bundle.putString("xxx", "background intent");
                 }
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);

@@ -46,7 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    ReactNativeMoPushNotification.setGlobalVerbose(true);
+//    ReactNativeMoPushNotification.setGlobalVerbose(true);
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
