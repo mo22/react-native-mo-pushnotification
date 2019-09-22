@@ -53,9 +53,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private static int notificationIDCounter = 1;
-    private static int requestIDCounter = 1;
     private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
-    private boolean verbose = false;
+    static boolean verbose = false;
 
     ReactNativeMoPushNotification(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -91,7 +90,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void notificationToMap(Notification notification, WritableMap rs) {
+    static void notificationToMap(Notification notification, WritableMap rs) {
         Bundle extras = notification.extras;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             rs.putInt("color", notification.color);
@@ -137,8 +136,8 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
+    public void setVerbose(boolean value) {
+        verbose = value;
     }
 
     @SuppressWarnings("unused")
@@ -177,7 +176,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void createNotificationChannel(ReadableMap args) {
-        if (this.verbose) Log.i("RNMoPushNotification", "createNotificationChannel args=" + args);
+        if (verbose) Log.i("RNMoPushNotification", "createNotificationChannel args=" + args);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Resources resources = getReactApplicationContext().getResources();
             String packageName = getReactApplicationContext().getPackageName();
@@ -326,12 +325,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 //                        e.printStackTrace();
 //                    }
 //                }
-                this.notificationToMap(notification, rs);
+                notificationToMap(notification, rs);
                 res.pushMap(rs);
             }
             promise.resolve(res);
         } else {
-            if (this.verbose) Log.i("RNMoPushNotification", "getNotifications not supported on this platform");
+            if (verbose) Log.i("RNMoPushNotification", "getNotifications not supported on this platform");
             promise.resolve(null);
         }
     }
@@ -352,19 +351,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     }
 
     private PendingIntent createPendingIntent(Bundle bundle) {
-//        Intent launchIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName());
-//        if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
-//        Intent intent;
-//        try {
-//            intent = new Intent(getReactApplicationContext(), Class.forName(launchIntent.getComponent().getClassName()));
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException("launchIntent class not found", e);
-//        }
-//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        intent.putExtra("ReactNativeMoPushNotification", bundle);
-//        requestIDCounter++;
-//        if (requestIDCounter == 65536) requestIDCounter = 1;
-//        return PendingIntent.getActivity(getReactApplicationContext(), requestIDCounter, intent, 0);
         Intent intent = new Intent(getReactApplicationContext(), ReactNativeMoPushNotificationReceiver.class);
         intent.putExtra("ReactNativeMoPushNotification", bundle);
         return PendingIntent.getBroadcast(getReactApplicationContext(), 0, intent, 0);
@@ -383,10 +369,10 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         if (channelID == null) {
             ApplicationInfo ai = getReactApplicationContext().getPackageManager().getApplicationInfo(getReactApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
             channelID = ai.metaData.getString("com.google.firebase.messaging.default_notification_channel_id", null);
-            if (channelID != null && this.verbose) Log.i("RNMoPushNotification", "showNotification firebase default channelID");
+            if (channelID != null && verbose) Log.i("RNMoPushNotification", "showNotification firebase default channelID");
         }
         if (channelID == null) {
-            if (this.verbose) Log.i("RNMoPushNotification", "showNotification using default channelID");
+            if (verbose) Log.i("RNMoPushNotification", "showNotification using default channelID");
             channelID = "default";
         }
 
@@ -496,6 +482,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
+                if (action.hasKey("background")) {
+                    bundle.putBoolean("background", action.getBoolean("background"));
+                }
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -533,10 +522,10 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void startMainActivity() {
-        if (this.verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity");
+        if (verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity");
         Intent intent = Objects.requireNonNull(getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName()));
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        if (this.verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity start");
+        if (verbose) Log.i("ReactNativeMoPushNotifi", "startMainActivity start");
         // @TODO: does not work in android Q
         getReactApplicationContext().startActivity(intent);
     }
@@ -570,7 +559,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         if (intent.hasExtra("google.message_id")) {
             // no way to get existing notification / title etc.
             Bundle extras = Objects.requireNonNull(intent.getExtras());
-            if (this.verbose) {
+            if (verbose) {
                 Log.i("RNMoPushNotification", "onNewIntent " + intent.getAction() + " " + extras);
                 for (String k : extras.keySet()) {
                     Log.i("RNMoPushNotification", "[" + k + "] = " + extras.get(k));
@@ -597,7 +586,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
             Bundle data = bundle.getBundle("data");
             Notification notification = bundle.getParcelable("notification");
-            if (this.verbose) {
+            if (verbose) {
                 Log.i("RNMoPushNotification", "onNewIntent ReactNativeMoPushNotification");
                 for (String k : bundle.keySet()) {
                     Log.i("RNMoPushNotification", "[" + k + "] = " + bundle.get(k));
@@ -620,7 +609,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             args.putInt("id", bundle.getInt("id", 0));
             if (bundle.containsKey("action")) args.putString("action", bundle.getString("action"));
             if (notification != null) {
-                this.notificationToMap(notification, args);
+                notificationToMap(notification, args);
             }
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
         }
