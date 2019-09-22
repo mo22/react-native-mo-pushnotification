@@ -570,40 +570,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             args.putMap("data", data);
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
         }
-
-//        if (intent.hasExtra("ReactNativeMoPushNotification")) {
-//            Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
-//            Bundle data = bundle.getBundle("data");
-//            Notification notification = bundle.getParcelable("notification");
-//            if (verbose) {
-//                Log.i("RNMoPushNotification", "onNewIntent ReactNativeMoPushNotification");
-//                for (String k : bundle.keySet()) {
-//                    Log.i("RNMoPushNotification", "[" + k + "] = " + bundle.get(k));
-//                }
-//                if (data != null) {
-//                    for (String k : data.keySet()) {
-//                        Log.i("RNMoPushNotification", "[data." + k + "] = " + data.get(k));
-//                    }
-//                }
-//                if (notification != null) {
-//                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-//                        for (String k : notification.extras.keySet()) {
-//                            Log.i("RNMoPushNotification", "[notification.extras." + k + "] = " + notification.extras.get(k));
-//                        }
-//                    }
-//                }
-//            }
-//            WritableMap args = Arguments.createMap();
-//            args.putString("type", "onNotificationClicked");
-//            args.putInt("id", bundle.getInt("id", 0));
-//            if (bundle.containsKey("action")) args.putString("action", bundle.getString("action"));
-//            if (notification != null) {
-//                notificationToMap(notification, args);
-//            }
-//            getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
-//        }
-
-
     }
 
     @Override
