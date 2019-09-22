@@ -54,7 +54,7 @@ RCT_EXPORT_MODULE()
     return dispatch_get_main_queue();
 }
 
-+ (bool)verbose {
++ (BOOL)verbose {
     return g_verbose;
 }
 
