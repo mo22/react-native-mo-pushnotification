@@ -4,32 +4,24 @@
 #import <React/RCTUtils.h>
 #import <objc/runtime.h>
 
-
-
-static void methodSwizzle(Class cls1, Class cls2, SEL sel) {
-    Method m1 = class_getInstanceMethod(cls1, sel);
-    Method m2 = class_getInstanceMethod(cls2, sel);
-    IMP m2i = method_getImplementation(m2);
-    if (m1 == nil) {
-        class_addMethod(cls1, sel, m2i, method_getTypeEncoding(m1));
-    } else {
+static void methodSwizzle(Class cls1, SEL sel1, Class cls2, SEL sel2) {
+    Method m1 = class_getInstanceMethod(cls1, sel1); // original
+    Method m2 = class_getInstanceMethod(cls2, sel2); // new
+    assert(m2);
+    if (m1) {
+        assert(class_addMethod(cls1, sel2, method_getImplementation(m1), method_getTypeEncoding(m1)));
         method_exchangeImplementations(m1, m2);
+    } else {
+        assert(class_addMethod(cls1, sel1, method_getImplementation(m2), method_getTypeEncoding(m2)));
     }
 }
-
-
 
 @interface ReactNativeMoPushNotificationDelegate : NSObject <UNUserNotificationCenterDelegate>
 @end
 @implementation ReactNativeMoPushNotificationDelegate
-
 @end
 
-
-
 static BOOL g_verbose;
-
-
 
 @interface ReactNativeMoPushNotification () <UNUserNotificationCenterDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString*, void (^)(id result)>* callbacks;
@@ -38,11 +30,12 @@ static BOOL g_verbose;
 
 @implementation ReactNativeMoPushNotification
 
-
-
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
+    // this is called during application didFinishLaunchingWithOptions
+    [self swizzleDelegate];
+    [self setupUserNotificationCenter];
     return YES;
 }
 
@@ -54,11 +47,10 @@ RCT_EXPORT_MODULE()
     return dispatch_get_main_queue();
 }
 
-
-
 + (bool)verbose {
     return g_verbose;
 }
+
 + (void)setVerbose:(BOOL)verbose {
     g_verbose = verbose;
 }
@@ -66,29 +58,40 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     [[self class] setVerbose:verbose];
 }
+
 - (BOOL)verbose {
     return [[self class] verbose];
 }
 
-
-
-
-
-+ (void)setup {
-    // @TODO: rename to swizzleApplication or something.
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-        [self didFinishLaunchingWithOptions:nil];
-        methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:));
-        methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:));
-        methodSwizzle([[RCTSharedApplication() delegate] class], [self class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:));
++ (void)swizzleDelegate {
+    assert([NSThread isMainThread]);
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
-//        RCTSharedApplication().delegate = nil; // really?
+        assert(appDelegate);
+        methodSwizzle(
+            [appDelegate class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:),
+            [self class],@selector(swizzled_application:didRegisterForRemoteNotificationsWithDeviceToken:)
+        );
+        methodSwizzle(
+            [appDelegate class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:),
+            [self class],@selector(swizzled_application:didFailToRegisterForRemoteNotificationsWithError:)
+        );
+        methodSwizzle(
+            [appDelegate class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
+            [self class],@selector(swizzled_application:didReceiveRemoteNotification:fetchCompletionHandler:)
+        );
         RCTSharedApplication().delegate = appDelegate;
-//    });
+    });
 }
 
-
++ (void)setupUserNotificationCenter {
+    if (![UNUserNotificationCenter currentNotificationCenter].delegate) {
+        static ReactNativeMoPushNotification* staticDelegate;
+        staticDelegate = [ReactNativeMoPushNotification new];
+        [UNUserNotificationCenter currentNotificationCenter].delegate = staticDelegate;
+    }
+}
 
 + (NSMutableArray*)notificationQueue {
     static dispatch_once_t onceToken;
@@ -104,8 +107,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     [[self notificationQueue] addObject:rs];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ReactNativeMoPushNotification" object:nil userInfo:rs];
 }
-
-
 
 - (void)startObserving {
     while ([ReactNativeMoPushNotification notificationQueue].count > 0) {
@@ -128,8 +129,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     }
 }
 
-
-
 - (NSString*)dataToHex:(NSData*)data {
     const unsigned char* bytes = data.bytes;
     NSMutableString* res = [NSMutableString new];
@@ -139,8 +138,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     return res;
 }
 
-
-
 + (BOOL)isDevEnvironment {
     NSString* path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"embedded.mobileprovision"];
     NSString* tmp = [NSString stringWithContentsOfFile:path encoding:NSASCIIStringEncoding error:nil];
@@ -149,8 +146,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     }
     return NO;
 }
-
-
 
 - (NSString*)newCallbackWithBlock:(void (^)(id result))handler {
     NSString* key = [[NSUUID UUID] UUIDString];
@@ -175,8 +170,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     handler(result);
 }
 
-
-
 - (NSDictionary*)UNNotificationToDict:(UNNotification*)notification {
     NSMutableDictionary* rs = [NSMutableDictionary new];
     rs[@"date"] = @([notification.date timeIntervalSince1970]);
@@ -198,7 +191,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     // trigger?
     return rs;
 }
-
 
 
 - (void)handle:(NSDictionary*)rs {
@@ -441,14 +433,6 @@ RCT_EXPORT_METHOD(setupCategories:(NSArray<NSDictionary*>*)rsCategories) {
         ]];
     }
     [[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:categories];
-}
-
-+ (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if (![UNUserNotificationCenter currentNotificationCenter].delegate) {
-        static ReactNativeMoPushNotification* staticDelegate;
-        staticDelegate = [ReactNativeMoPushNotification new];
-        [UNUserNotificationCenter currentNotificationCenter].delegate = staticDelegate;
-    }
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
