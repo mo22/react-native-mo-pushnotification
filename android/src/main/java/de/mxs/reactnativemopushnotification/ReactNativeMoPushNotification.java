@@ -285,7 +285,8 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     public void cancelNotification(int id) {
         NotificationManager notificationManager = Objects.requireNonNull((NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE));
         notificationManager.cancel(id);
-//        notificationManager.cancel("test-tag", id); // this works?!
+        notificationManager.cancel("fcm", id);
+//        notificationManager.cancelAll();
     }
 
     @SuppressWarnings("unused")
