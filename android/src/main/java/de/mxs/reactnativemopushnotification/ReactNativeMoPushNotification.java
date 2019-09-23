@@ -48,8 +48,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import me.leolin.shortcutbadger.ShortcutBadger;
-
 public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private static int notificationIDCounter = 1;
@@ -143,16 +141,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @SuppressWarnings("unused")
     public static void setGlobalVerbose(boolean value) { verbose = value; }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void setShortcutBadger(int number) {
-        try {
-            ShortcutBadger.applyCount(getReactApplicationContext(), number);
-        } catch (Exception e) {
-            // ignore
-        }
-    }
 
     @SuppressWarnings("unused")
     @ReactMethod

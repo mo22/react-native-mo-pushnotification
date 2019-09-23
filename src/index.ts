@@ -121,18 +121,6 @@ export class PushNotification {
   }
 
   /**
-   * set the application's badge
-   * works fine in ios, only partial support in android
-   */
-  public static async setBadge(value: number) {
-    if (ios.Module) {
-      ios.Module.setApplicationIconBadgeNumber(value);
-    } else if (android.Module) {
-      android.Module.setShortcutBadger(value);
-    }
-  }
-
-  /**
    * check if push permissions have been granted
    */
   public static async getPermissionStatus(): Promise<PushNotificationPermissionStatus> {
@@ -263,6 +251,15 @@ export class PushNotification {
   }
 
   /**
+   * set ios application badge
+   */
+  public static async iosSetBadge(value: number) {
+    if (ios.Module) {
+      ios.Module.setApplicationIconBadgeNumber(value);
+    }
+  }
+
+  /**
    * setup ios categories
    */
   public static async iosSetupCategories(categories: ios.Category[]) {
@@ -311,7 +308,6 @@ export class PushNotification {
         if (this.verbose) console.log('ReactNativeMoPushNotification event', rs);
 
         if (rs.type === 'didReceiveRemoteNotification') {
-          console.log('XXX didReceiveRemoteNotification');
           const data = { ...rs.userInfo };
           delete data.aps;
           // @TODO: what else?

@@ -89,11 +89,6 @@ export declare class PushNotification {
      */
     static setVerbose(verbose: boolean): void;
     /**
-     * set the application's badge
-     * works fine in ios, only partial support in android
-     */
-    static setBadge(value: number): Promise<void>;
-    /**
      * check if push permissions have been granted
      */
     static getPermissionStatus(): Promise<PushNotificationPermissionStatus>;
@@ -113,6 +108,10 @@ export declare class PushNotification {
      * request notification token
      */
     static requestToken(): Promise<PushNotificationToken>;
+    /**
+     * set ios application badge
+     */
+    static iosSetBadge(value: number): Promise<void>;
     /**
      * setup ios categories
      */
