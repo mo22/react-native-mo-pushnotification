@@ -216,7 +216,6 @@ export class PushNotification {
         }
         this.currentToken = await new Promise<PushNotificationToken>((resolve, reject) => {
           let sub: EmitterSubscription|undefined = ios.Events!.addListener('ReactNativeMoPushNotification', (rs) => {
-            console.log('rs', rs);
             if (rs.type === 'didFailToRegisterForRemoteNotificationsWithError') {
               if (sub) {
                 sub.remove();
@@ -236,7 +235,6 @@ export class PushNotification {
               });
             }
           });
-          console.log('registerForRemoteNotifications');
           ios.Module!.registerForRemoteNotifications();
         });
 
