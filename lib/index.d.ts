@@ -29,7 +29,6 @@ export interface PushNotificationNotification {
     color?: number;
     ongoing?: boolean;
     icon?: string;
-    extraKey?: string;
     android?: Partial<android.Notification>;
     ios?: Partial<ios.NotificationArgs>;
 }
