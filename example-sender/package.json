@@ -5,10 +5,10 @@
   "license": "MIT",
   "dependencies": {
     "apn": "^2.2.0",
-    "firebase-admin": "^8.5.0"
+    "firebase-admin": "^8.6.0"
   },
   "devDependencies": {
-    "@types/node": "^12.7.4",
-    "typescript": "^3.6.2"
+    "@types/node": "^12.7.8",
+    "typescript": "^3.6.3"
   }
 }
