@@ -6,6 +6,9 @@ import { NavigationActions, NavigationInjectedProps } from 'react-navigation';
 import { releaseOnWillUnmount } from 'react-mo-core';
 
 PushNotification.setVerbose(true);
+PushNotification.onNotification.subscribe((event) => {
+  console.log('onNotification', event);
+});
 
 interface State {
   permissions?: string;
@@ -20,9 +23,12 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
   };
 
   public async componentDidMount() {
+    console.log('Menu.componentDidMount');
+
     this.setState({ permissions: await PushNotification.getPermissionStatus() });
 
     PushNotification.onShowNotification = (_event) => {
+      console.log('onShowNotification');
       return this.state.allowShowNotification || false;
     };
 
@@ -32,8 +38,7 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
       this.updateActiveNotifications();
     }));
 
-    releaseOnWillUnmount(this, PushNotification.onNotification.subscribe((event) => {
-      console.log('onNotification', event);
+    releaseOnWillUnmount(this, PushNotification.onNotification.subscribe((_event) => {
       setTimeout(() => this.updateActiveNotifications(), 1000);
     }));
 
