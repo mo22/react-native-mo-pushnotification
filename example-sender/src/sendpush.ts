@@ -42,15 +42,19 @@ export async function sendpush(token: PushNotificationToken, data: { title?: str
         token: token.token,
         android: {
           priority: 'high',
-          data: {
-            ...data.data,
+          ...(data.data !== undefined) && {
+            data: {
+              ...data.data,
+            },
           },
-          notification: {
-            title: data.title || '',
-            body: data.message,
-            sound: data.sound || 'ping',
-            channelId: data.channelID || 'default',
-            icon: 'ic_launcher', // always required...
+          ...(data.message !== undefined) && {
+            notification: {
+              title: data.title || '',
+              body: data.message,
+              sound: data.sound || 'ping',
+              channelId: data.channelID || 'default',
+              icon: 'ic_launcher', // always required...
+            },
           },
         },
       });
@@ -66,15 +70,19 @@ export async function sendpush(token: PushNotificationToken, data: { title?: str
     try {
       const note = new apn.Notification({
         expiry: Math.floor(Date.now() / 1000) + 7200,
-        sound: data.sound ? (data.sound + '.caf') : 'ping.caf',
-        contentAvailable: true,
-        alert: {
-          title: data.title || '',
-          body: data.message,
+        ...(data.data !== undefined) && {
+          contentAvailable: true,
+          payload: {
+            ...data.data,
+          },
         },
-        topic: token.id,
-        payload: {
-          ...data.data,
+        ...(data.message !== undefined) && {
+          sound: data.sound ? (data.sound + '.caf') : 'ping.caf',
+          alert: {
+            title: data.title || '',
+            body: data.message,
+          },
+          topic: token.id,
         },
       });
       if (data.badge !== undefined) note.badge = data.badge;
@@ -90,34 +98,21 @@ export async function sendpush(token: PushNotificationToken, data: { title?: str
       throw e;
     }
   }
-
-  // apnProvider.shutdown();
-  // apnDevProvider.shutdown();
-  // {
-  //   const tmp = (apnProvider as any);
-  //   for (const i of tmp.client.endpointManager._endpoints) {
-  //     i._socket.unref();
-  //     i._heartBeatIntervalCheck.unref();
-  //   }
-  // }
-  // {
-  //   const tmp = (apnDevProvider as any);
-  //   for (const i of tmp.client.endpointManager._endpoints) {
-  //     i._socket.unref();
-  //     i._heartBeatIntervalCheck.unref();
-  //   }
-  // }
 }
 
 
 if (require.main === module) {
   (async () => {
-    const token1: PushNotificationToken = (
-    );
-    const token2: PushNotificationToken = (
-    );
-    await sendpush(token1, { message: 'message' });
-    await sendpush(token2, { message: 'message' });
+    const token1: PushNotificationToken = JSON.parse(`
+      {"type":"ios-dev","token":"1E87399AC29346ACC738ECA69428873EE76F3A2192D4EDBA06210F4BC3DBD7DA","id":"de.mxs.reactnativemopushnotification.example","locale":"en-DE"}
+    `);
+    const token2: PushNotificationToken = JSON.parse(`
+      {"token":"fvY_nOB1OkM:APA91bH30nwNeMKjJy89zjSdyBM68ETNZvHKjy3PapQkhQDnR-3NHk9in9VDEMcagl6ACmYpFwvxdpm-gICIlfSeQ0_5kui--S9eZvVgeRYvYdvltQ6AgDmtgeSvaMjZPvG-rlIeTsNz","type":"android-fcm","id":"de.mxs.reactnativemopushnotification.example","locale":"de-DE"}
+    `);
+    // await sendpush(token1, { message: 'message ' + new Date().toISOString() });
+    // await sendpush(token2, { message: 'message ' + new Date().toISOString() });
+    await sendpush(token1, { data: { message: 'message ' + new Date().toISOString() } });
+    await sendpush(token2, { data: { message: 'message ' + new Date().toISOString() } });
     process.exit(0);
   })().catch(console.error);
 }
