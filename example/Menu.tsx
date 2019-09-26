@@ -70,11 +70,13 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
           subtitle={this.state.token || ''}
           onPress={async () => {
             if (this.state.token) {
-              console.log(JSON.parse(this.state.token));
+              console.log('have token');
+              console.log(this.state.token);
               Clipboard.setString(this.state.token);
             } else {
+              console.log('requestToken');
               const res = await PushNotification.requestToken();
-              console.log(res);
+              console.log(JSON.stringify(res));
               Clipboard.setString(JSON.stringify(res));
               this.setState({ token: JSON.stringify(res) });
             }
