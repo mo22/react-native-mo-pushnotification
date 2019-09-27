@@ -285,8 +285,11 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     public void cancelNotification(int id) {
         NotificationManager notificationManager = Objects.requireNonNull((NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE));
         notificationManager.cancel(id);
-        notificationManager.cancel("fcm", id);
-//        notificationManager.cancelAll();
+        if (id == 0) {
+            // if id is 0 android Q fails to cancel the notification.
+            // however, if we send the notification with a tag it works.
+            notificationManager.cancel("fcm", id);
+        }
     }
 
     @SuppressWarnings("unused")
