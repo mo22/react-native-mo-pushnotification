@@ -1030,10 +1030,18 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
-"@types/react-native@*", "@types/react-native@^0.60.16":
+"@types/react-native@*":
   version "0.60.16"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.60.16.tgz#011d8c9ad5184a567c331490d632af14c1118bc0"
   integrity sha512-IH9QvrvlZRrtfVi5XiMuh+hT5SvgcGzx4szEi+Vge3qmvU3jlboEsXg4iWRPtgFx3eMIZoAksR3kbgVrB8ctLA==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/react" "*"
+
+"@types/react-native@^0.60.17":
+  version "0.60.17"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.60.17.tgz#3a4c2f3ebe1942fb267bba9374f0533c0ece261c"
+  integrity sha512-dvPdLYxrU74bU14GvGV+f1EMjyD6L2iDenEzDfUBWhxn7KKRgkWb289r2EIN+10XqvRP+H7YBgl+AoEHEfkcTA==
   dependencies:
     "@types/prop-types" "*"
     "@types/react" "*"
@@ -5269,10 +5277,10 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-mo-pushnotification@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.7.tgz#50ac09aabcefba245ad44f70c4471f91d52c2389"
-  integrity sha512-cD1Kc9uexbvJfadwaJE77FrxnhRFT+YhevJ9C4I2rw/Q2wxyam7GnH7MkUfJyof3Spo+LOI1V9ps0Ske2MntjA==
+react-native-mo-pushnotification@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-mo-pushnotification/-/react-native-mo-pushnotification-0.1.8.tgz#c8cad599ffb4d571bbfe9e38bd30aa57b81b68da"
+  integrity sha512-B6aDQe504BUGrNBIBhMiF8AUYP3LwaQfHWoD45eGOhpmDK1biFssl6DFHf/VmLkdTarizmnrX+AwQEj6q6al7g==
   dependencies:
     mo-core "^0.1.1"
 

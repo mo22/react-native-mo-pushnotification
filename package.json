@@ -1,6 +1,6 @@
 {
   "name": "react-native-mo-pushnotification",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "react-native pushnotification push notifications for ios and android",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "*.podspec"
   ],
   "devDependencies": {
-    "@types/react-native": "^0.60.16",
+    "@types/react-native": "^0.60.17",
     "react": "^16.9.0",
     "react-native": "^0.61.1",
     "typescript": "^3.5.3"
