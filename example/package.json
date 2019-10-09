@@ -16,7 +16,7 @@
     "react-native": "0.61.2",
     "react-native-elements": "^1.2.6",
     "react-native-gesture-handler": "^1.4.1",
-    "react-native-mo-pushnotification": "^0.1.8",
+    "react-native-mo-pushnotification": "^0.1.9",
     "react-native-screens": "^2.0.0-alpha.3",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
