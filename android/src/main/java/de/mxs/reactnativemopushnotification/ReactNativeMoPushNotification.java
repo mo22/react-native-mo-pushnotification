@@ -334,7 +334,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         intent.putExtra("ReactNativeMoPushNotification", bundle);
         requestIDCounter++;
         if (requestIDCounter == 65536) requestIDCounter = 1;
-        return PendingIntent.getBroadcast(getReactApplicationContext(), requestIDCounter, intent, 0);
+        return PendingIntent.getBroadcast(getReactApplicationContext(), requestIDCounter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @SuppressWarnings("unused")
