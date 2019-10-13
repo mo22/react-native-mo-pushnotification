@@ -127,7 +127,7 @@ export declare class PushNotification {
      */
     static androidStartMainActivity(): Promise<void>;
     private static setupEventsDone;
-    private static setupEvents;
+    static setupEvents(): void;
     /**
      * get the active notifications from the notification center
      */

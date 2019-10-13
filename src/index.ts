@@ -62,7 +62,6 @@ export class PushNotification {
    * called when a notification is received
    */
   public static readonly onNotification = new Event<PushNotificationNotification>((emit) => {
-    PushNotification.setupEvents();
     PushNotification.onNotificationEmit = emit;
     return () => {
       PushNotification.onNotificationEmit = undefined;
@@ -74,7 +73,6 @@ export class PushNotification {
    * called when a notification is clicked / interacted with
    */
   public static readonly onInteraction = new Event<PushNotificationNotification & { action: string; }>((emit) => {
-    PushNotification.setupEvents();
     PushNotification.onInteractionEmit = emit;
     return () => {
       PushNotification.onInteractionEmit = undefined;
@@ -291,7 +289,7 @@ export class PushNotification {
 
   private static setupEventsDone = false;
 
-  private static setupEvents() {
+  public static setupEvents() {
     if (this.setupEventsDone) return;
     this.setupEventsDone = true;
     if (ios.Module) {
@@ -531,3 +529,5 @@ export class PushNotification {
   }
 
 }
+
+PushNotification.setupEvents();

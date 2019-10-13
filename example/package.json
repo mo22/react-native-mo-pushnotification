@@ -16,14 +16,14 @@
     "react-native": "0.61.2",
     "react-native-elements": "^1.2.6",
     "react-native-gesture-handler": "^1.4.1",
-    "react-native-mo-pushnotification": "^0.1.10",
-    "react-native-screens": "^2.0.0-alpha.3",
+    "react-native-mo-pushnotification": "^0.1.11",
+    "react-native-screens": "^2.0.0-alpha.4",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.9.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.3",
+    "@babel/core": "^7.6.4",
     "@babel/runtime": "^7.6.3",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.18",
@@ -36,7 +36,7 @@
     "jetifier": "^1.6.4",
     "metro-react-native-babel-preset": "^0.56.0",
     "react-test-renderer": "16.10.2",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "preset": "react-native"
