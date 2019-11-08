@@ -24,6 +24,8 @@
   RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
     os_log_error(OS_LOG_DEFAULT, "%{public}s", message.UTF8String);
   });
+  
+  [ReactNativeMoPushNotification setVerbose:YES];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
