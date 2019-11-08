@@ -112,12 +112,13 @@ export default class Menu extends React.PureComponent<NavigationInjectedProps, S
           title="show notification"
           chevron={true}
           onPress={() => {
+            Alert.alert('TODO');
             this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Local' }));
           }}
         />
 
         <ListItem
-          title="test"
+          title="show test notification"
           chevron={true}
           onPress={() => {
             PushNotification.showNotification({
