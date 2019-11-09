@@ -182,7 +182,7 @@ PODS:
     - React-cxxreact (= 0.61.4)
     - React-jsi (= 0.61.4)
   - React-jsinspector (0.61.4)
-  - react-native-mo-pushnotification (0.1.11):
+  - react-native-mo-pushnotification (0.1.12):
     - React
   - React-RCTActionSheet (0.61.4):
     - React-Core/RCTActionSheetHeaders (= 0.61.4)
@@ -341,7 +341,7 @@ SPEC CHECKSUMS:
   React-jsi: ca921f4041505f9d5197139b2d09eeb020bb12e8
   React-jsiexecutor: 8dfb73b987afa9324e4009bdce62a18ce23d983c
   React-jsinspector: d15478d0a8ada19864aa4d1cc1c697b41b3fa92f
-  react-native-mo-pushnotification: 9d46f1305b327eb64de8807b96e85ee27f40e9fd
+  react-native-mo-pushnotification: 1799bec97ac47f364e63ce9e6ea4ea530f5dc6c7
   React-RCTActionSheet: 7369b7c85f99b6299491333affd9f01f5a130c22
   React-RCTAnimation: d07be15b2bd1d06d89417eb0343f98ffd2b099a7
   React-RCTBlob: 8e0b23d95c9baa98f6b0e127e07666aaafd96c34
@@ -357,6 +357,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: ba3d99dbee6c15ea6bbe3783d1f0cb1ffb79af0f
 
-PODFILE CHECKSUM: 08817a45d012e53e627c9ff28e24d329b0801fba
+PODFILE CHECKSUM: 0c3863a1a42af99fa65013ef1c2e436345ea1ae3
 
 COCOAPODS: 1.8.4
