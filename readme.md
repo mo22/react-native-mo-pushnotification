@@ -19,6 +19,7 @@ For Android:
 - send notification
   - extra page?
 - initial interaction?
+- ios firebase token?
 
 ## Usage
 
