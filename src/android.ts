@@ -51,6 +51,7 @@ export interface Notification {
   smallIcon?: string;
   autoCancel?: boolean;
   fullScreen?: boolean;
+  turnScreenOn?: boolean;
   actions?: (
     ({
       title: string;

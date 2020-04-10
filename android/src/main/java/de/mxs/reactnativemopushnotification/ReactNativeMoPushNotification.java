@@ -497,6 +497,14 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
 
         notificationManager.notify(notificationID, builder.build());
+
+        if (args.hasKey("turnScreenOn") && args.getBoolean("turnScreenOn")) {
+            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
+            // PARTIAL_WAKE_LOCK does not work?
+            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
+            wl.acquire(10 * 1000);
+        }
+
         promise.resolve(notificationID);
     }
 
