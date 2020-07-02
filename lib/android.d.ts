@@ -144,5 +144,5 @@ export declare type Event = {
 };
 export declare const Module: Module | undefined;
 export declare const Events: {
-    addListener(eventType: "ReactNativeMoPushNotification", listener: (event: Event) => void): EmitterSubscription;
+    addListener(eventType: 'ReactNativeMoPushNotification', listener: (event: Event) => void): EmitterSubscription;
 } | undefined;
