@@ -13,10 +13,10 @@
     "*.podspec"
   ],
   "devDependencies": {
-    "@types/react-native": "^0.62.16",
+    "@types/react-native": "^0.63.4",
     "react": "^16.13.1",
-    "react-native": "^0.62.2",
-    "typescript": "^3.9.6"
+    "react-native": "^0.63.2",
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "mo-core": "^0.1.4"

@@ -2,6 +2,7 @@ package de.mxs.reactnativemopushnotification;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -545,6 +546,20 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         PowerManager.WakeLock wakeLock = this.wakeLocks.remove(key);
         if (wakeLock == null) return;
         wakeLock.release();
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void scheduleWakeup(ReadableMap args, Promise promise) {
+        // does not work if app is killed.
+        Log.i("XXX", "scheduleWakeup");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("background", true);
+        PendingIntent pendingIntent = createPendingIntent(bundle);
+        AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 5, pendingIntent);
+        Log.i("XXX", "scheduleWakeup done");
+        promise.resolve(null);
     }
 
     @Override
