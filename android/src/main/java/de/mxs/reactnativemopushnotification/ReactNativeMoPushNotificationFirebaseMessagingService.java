@@ -54,6 +54,7 @@ public final class ReactNativeMoPushNotificationFirebaseMessagingService extends
         if (hook != null) {
             hook.onMessageReceived(remoteMessage);
         }
+
         if (ReactNativeMoPushNotification.verbose) {
             Log.i("RNMoPushNotification", "onMessageReceived " + remoteMessage);
         }

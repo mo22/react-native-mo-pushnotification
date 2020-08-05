@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -559,6 +560,14 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 5, pendingIntent);
         Log.i("XXX", "scheduleWakeup done");
+        promise.resolve(null);
+    }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void setStartOnBoot(boolean arg, Promise promise) {
+        SharedPreferences sharedPreferences = getReactApplicationContext().getSharedPreferences("de.mxs.reactnativemopushnotification", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean("startOnBoot", arg).apply();
         promise.resolve(null);
     }
 
