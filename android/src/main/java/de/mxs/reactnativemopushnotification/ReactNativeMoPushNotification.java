@@ -566,6 +566,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void setStartOnBoot(boolean arg, Promise promise) {
+        if (ReactNativeMoPushNotification.verbose) {
+            Log.i("RNMoPushNotification", "setStartOnBoot " + arg);
+        }
         SharedPreferences sharedPreferences = getReactApplicationContext().getSharedPreferences("de.mxs.reactnativemopushnotification", Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean("startOnBoot", arg).apply();
         promise.resolve(null);
