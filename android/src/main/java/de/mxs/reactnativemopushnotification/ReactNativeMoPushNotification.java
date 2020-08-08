@@ -554,11 +554,17 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     public void scheduleWakeup(ReadableMap args, Promise promise) {
         // does not work if app is killed.
         Log.i("XXX", "scheduleWakeup");
+        long time = (long)args.getDouble("time");
+        String test = args.getString("test");
+        // time.
+        // args?
         Bundle bundle = new Bundle();
         bundle.putBoolean("background", true);
+        if (test != null) bundle.putString("test", test);
+        bundle.putLong("time", time);
         PendingIntent pendingIntent = createPendingIntent(bundle);
         AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 5, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         Log.i("XXX", "scheduleWakeup done");
         promise.resolve(null);
     }

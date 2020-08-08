@@ -100,6 +100,8 @@ export interface Module {
   acquireWakeLock(tag: string, timeout: number): Promise<string>;
   releaseWakeLock(key: string): void;
   testWorkManager(): void;
+  setStartOnBoot(active: boolean): Promise<void>;
+  scheduleWakeup(args: { time: number; test?: string; }): Promise<void>;
 }
 
 export type Event = {
