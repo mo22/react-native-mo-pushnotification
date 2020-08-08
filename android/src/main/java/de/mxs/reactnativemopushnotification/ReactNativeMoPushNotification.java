@@ -43,6 +43,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -552,12 +553,11 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void scheduleWakeup(ReadableMap args, Promise promise) {
-        // does not work if app is killed.
-        Log.i("XXX", "scheduleWakeup");
         long time = (long)args.getDouble("time");
+        if (ReactNativeMoPushNotification.verbose) {
+            Log.i("RNMoPushNotification", "scheduleWakeup " + new Date(time).toString());
+        }
         String test = args.getString("test");
-        // time.
-        // args?
         Bundle bundle = new Bundle();
         bundle.putBoolean("background", true);
         if (test != null) bundle.putString("test", test);
@@ -565,7 +565,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         PendingIntent pendingIntent = createPendingIntent(bundle);
         AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-        Log.i("XXX", "scheduleWakeup done");
         promise.resolve(null);
     }
 
