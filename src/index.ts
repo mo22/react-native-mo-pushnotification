@@ -309,7 +309,7 @@ export class PushNotification {
         if (this.verbose) console.log('ReactNativeMoPushNotification event', rs);
 
         if (rs.type === 'didReceiveRemoteNotification') {
-          const data = { ...rs.userInfo };
+          const data: any = { ...rs.userInfo };
           delete data.aps;
           // @TODO: what else?
           const notification: PushNotificationNotification = {
