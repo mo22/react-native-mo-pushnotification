@@ -158,7 +158,10 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
         firebaseInstanceId.getInstanceId().addOnSuccessListener(
                 instanceIdResult -> promise.resolve(instanceIdResult.getToken())
-        ).addOnFailureListener(promise::reject);
+        ).addOnFailureListener(ex -> {
+            Log.i("RNMoPushNotification", "getFirebaseInstanceId", ex);
+            promise.reject(ex);
+        });
     }
 
     @SuppressWarnings("unused")
