@@ -55,7 +55,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     private static int notificationIDCounter = 1;
     private static int requestIDCounter = 1;
-    private HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
+    private final HashMap<String, PowerManager.WakeLock> wakeLocks = new HashMap<>();
     static boolean verbose = false;
 
     ReactNativeMoPushNotification(ReactApplicationContext reactContext) {
@@ -536,13 +536,17 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void acquireWakeLock(String tag, int timeout, Promise promise) {
-        PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+        try {
+            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
+            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 tag);
-        String key = "" + wakeLock.hashCode() + "-" + wakeLock.toString();
-        this.wakeLocks.put(key, wakeLock);
-        wakeLock.acquire(timeout);
-        promise.resolve(key);
+            String key = "" + wakeLock.hashCode() + "-" + wakeLock.toString();
+            wakeLock.acquire(timeout);
+            this.wakeLocks.put(key, wakeLock);
+            promise.resolve(key);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @SuppressWarnings("unused")
