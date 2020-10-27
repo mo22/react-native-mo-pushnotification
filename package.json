@@ -13,17 +13,13 @@
     "*.podspec"
   ],
   "devDependencies": {
-    "@types/react-native": "^0.63.10",
-    "react": "^16.13.1",
-    "react-native": "^0.63.2",
-    "typescript": "^4.0.2"
+    "@types/react-native": "^0.63.30",
+    "react": "^17.0.1",
+    "react-native": "^0.63.3",
+    "typescript": "^4.0.5"
   },
   "dependencies": {
     "mo-core": "^0.1.5"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
   },
   "repository": {
     "type": "git",
