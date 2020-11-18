@@ -551,10 +551,15 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void releaseWakeLock(String key) {
+    public void releaseWakeLock(String key, Promise promise) {
         PowerManager.WakeLock wakeLock = this.wakeLocks.remove(key);
         if (wakeLock == null) return;
-        wakeLock.release();
+        try {
+            wakeLock.release();
+            promise.resolve(null);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @SuppressWarnings("unused")

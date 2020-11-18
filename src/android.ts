@@ -98,7 +98,7 @@ export interface Module {
   showNotification(args: Notification): Promise<number>;
   startMainActivity(): void;
   acquireWakeLock(tag: string, timeout: number): Promise<string>;
-  releaseWakeLock(key: string): void;
+  releaseWakeLock(key: string): Promise<void>;
   testWorkManager(): void;
   setStartOnBoot(active: boolean): Promise<void>;
   scheduleWakeup(args: { time: number; test?: string; }): Promise<void>;
