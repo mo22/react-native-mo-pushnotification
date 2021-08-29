@@ -640,4 +640,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @Override
     public void onHostDestroy() {
     }
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void addListener(String eventName) {}
+
+    @SuppressWarnings("unused")
+    @ReactMethod
+    public void removeListeners(double count) {}
 }
