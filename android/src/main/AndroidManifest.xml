@@ -20,13 +20,13 @@
         <receiver android:name=".ReactNativeMoPushNotificationReceiver">
         </receiver>
 
-        <receiver android:name=".ReactNativeMoPushNotificationBootReceiver">
+        <receiver android:name=".ReactNativeMoPushNotificationBootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-      <meta-data
+        <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="default"
         />

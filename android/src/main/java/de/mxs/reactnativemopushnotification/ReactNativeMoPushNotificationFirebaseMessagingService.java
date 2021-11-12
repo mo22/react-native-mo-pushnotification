@@ -35,6 +35,7 @@ public final class ReactNativeMoPushNotificationFirebaseMessagingService extends
 
     private static Hook hook;
 
+    @SuppressWarnings({"unused"})
     public static void setHook(Hook val) {
         hook = val;
     }

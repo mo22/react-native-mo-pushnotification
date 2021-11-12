@@ -1,5 +1,6 @@
 package de.mxs.reactnativemopushnotification;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -30,7 +31,6 @@ import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -51,7 +51,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener {
 
     private static int notificationIDCounter = 1;
     private static int requestIDCounter = 1;
@@ -61,7 +61,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     ReactNativeMoPushNotification(ReactApplicationContext reactContext) {
         super(reactContext);
         reactContext.addActivityEventListener(this);
-        reactContext.addLifecycleEventListener(this);
 
         Activity activity = getReactApplicationContext().getCurrentActivity();
         if (activity != null) {
@@ -348,9 +347,15 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         intent.putExtra("ReactNativeMoPushNotification", bundle);
         requestIDCounter++;
         if (requestIDCounter == 65536) requestIDCounter = 1;
-        return PendingIntent.getBroadcast(getReactApplicationContext(), requestIDCounter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(
+            getReactApplicationContext(),
+            requestIDCounter,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT // @TODO: immutable?
+        );
     }
 
+    @SuppressLint("NotificationTrampoline")
     @SuppressWarnings("unused")
     @ReactMethod
     public void showNotification(ReadableMap args, Promise promise) throws Exception {
@@ -529,7 +534,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         Intent intent = Objects.requireNonNull(getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName()));
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         if (verbose) Log.i("RNMoPushNotification", "startMainActivity start");
-        // @TODO: does not work in android Q
+        // @TODO: does not work in android Q ?
         getReactApplicationContext().startActivity(intent);
     }
 
@@ -622,23 +627,6 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             args.putMap("data", data);
             getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
         }
-    }
-
-    @Override
-    public void onHostResume() {
-//        Activity activity = getReactApplicationContext().getCurrentActivity();
-//        if (activity != null) {
-//            Intent intent = activity.getIntent();
-//            this.onNewIntent(intent);
-//        }
-    }
-
-    @Override
-    public void onHostPause() {
-    }
-
-    @Override
-    public void onHostDestroy() {
     }
 
     @SuppressWarnings("unused")

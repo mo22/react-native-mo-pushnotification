@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 
 public final class ReactNativeMoPushNotificationPackage implements ReactPackage {
 
+    @SuppressWarnings("rawtypes")
     @Override
     public @Nonnull List<ViewManager> createViewManagers(@Nonnull ReactApplicationContext reactContext) {
         return Collections.emptyList();
