@@ -351,7 +351,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             getReactApplicationContext(),
             requestIDCounter,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT // @TODO: immutable?
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
     }
 
