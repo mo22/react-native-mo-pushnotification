@@ -88,6 +88,7 @@ export interface Module {
     getSystemInfo(): Promise<{
         locale: string;
         packageName: string;
+        launchIntent?: string;
     }>;
     createNotificationChannel(channel: Partial<Channel>): void;
     deleteNotificationChannel(id: string): void;

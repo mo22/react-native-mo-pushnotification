@@ -87,7 +87,7 @@ export interface Module {
   setVerbose(verbose: boolean): void;
   setShortcutBadger(value: number): void;
   getFirebaseInstanceId(): Promise<string>;
-  getSystemInfo(): Promise<{ locale: string; packageName: string; }>;
+  getSystemInfo(): Promise<{ locale: string; packageName: string; launchIntent?: string; }>;
   createNotificationChannel(channel: Partial<Channel>): void;
   deleteNotificationChannel(id: string): void;
   openNotificationSettings(): void;
