@@ -169,7 +169,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         res.putString("locale", locale.getLanguage() + "-" + locale.getCountry());
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (launchIntent != null) {
-            res.putString("launchIntent", launchIntent.getAction());
+            if (launchIntent.getComponent() != null) {
+                res.putString("launchIntent", launchIntent.getComponent().getPackageName() + "/" + launchIntent.getComponent().getClassName());
+            }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManager notificationManager = Objects.requireNonNull(context.getSystemService(NotificationManager.class));
