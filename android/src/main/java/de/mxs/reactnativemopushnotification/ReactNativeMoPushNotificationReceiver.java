@@ -30,10 +30,8 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
                 }
             }
             if (notification != null) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                    for (String k : notification.extras.keySet()) {
-                        Log.i("RNMoPushNotification", "[notification.extras." + k + "] = " + notification.extras.get(k));
-                    }
+                for (String k : notification.extras.keySet()) {
+                    Log.i("RNMoPushNotification", "[notification.extras." + k + "] = " + notification.extras.get(k));
                 }
             }
         }
@@ -70,17 +68,5 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
                 reactInstanceManager.createReactContextInBackground();
             }
         }
-
-//        boolean background = bundle.getBoolean("background", false);
-//        if (!background) {
-//            if (ReactNativeMoPushNotification.verbose) {
-//                Log.i("RNMoPushNotification", "Receiver startActivity");
-//            }
-//            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-//            if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
-//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(launchIntent);
-//        }
     }
 }

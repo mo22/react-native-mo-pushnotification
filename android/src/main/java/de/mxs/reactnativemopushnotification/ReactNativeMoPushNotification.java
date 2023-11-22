@@ -1,7 +1,6 @@
 package de.mxs.reactnativemopushnotification;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -90,12 +89,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     static void notificationToMap(Notification notification, WritableMap rs) {
         Bundle extras = notification.extras;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            rs.putInt("color", notification.color);
-        }
+        rs.putInt("color", notification.color);
         rs.putInt("number", notification.number);
         rs.putString("title", extras.getString("android.title"));
         rs.putString("subtext", extras.getString("android.subText"));
@@ -166,13 +162,17 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void getSystemInfo(final Promise promise) {
-        NotificationManager notificationManager = (NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager == null) return;
-        Locale locale = ConfigurationCompat.getLocales(getReactApplicationContext().getResources().getConfiguration()).get(0);
+        ReactApplicationContext context = getReactApplicationContext();
+        Locale locale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
         WritableMap res = Arguments.createMap();
-        res.putString("packageName", getReactApplicationContext().getPackageName());
+        res.putString("packageName", context.getPackageName());
         res.putString("locale", locale.getLanguage() + "-" + locale.getCountry());
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (launchIntent != null) {
+            res.putString("launchIntent", launchIntent.getAction());
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationManager notificationManager = Objects.requireNonNull(context.getSystemService(NotificationManager.class));
             res.putBoolean("notificationsEnabled", notificationManager.areNotificationsEnabled());
         }
         promise.resolve(res);
@@ -254,7 +254,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, getReactApplicationContext().getPackageName());
             activity.startActivity(intent);
-        } else if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+        } else {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.setData(Uri.parse("package:" + getReactApplicationContext().getPackageName()));
@@ -297,7 +297,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void cancelNotification(int id) {
-        NotificationManager notificationManager = Objects.requireNonNull((NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE));
+        NotificationManager notificationManager = Objects.requireNonNull(getReactApplicationContext().getSystemService(NotificationManager.class));
         notificationManager.cancel(id);
         if (id == 0) {
             // if id is 0 android Q fails to cancel the notification.
@@ -309,23 +309,18 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void getNotifications(Promise promise) {
-        NotificationManager notificationManager = Objects.requireNonNull((NotificationManager)getReactApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            WritableArray res = Arguments.createArray();
-            for (StatusBarNotification item : notificationManager.getActiveNotifications()) {
-                Notification notification = item.getNotification();
-                WritableMap rs = Arguments.createMap();
-                rs.putInt("id", item.getId()); // returns 0 sometimes... then cancelNotification does not work...
-                rs.putBoolean("ongoing", !item.isClearable());
-                rs.putDouble("postTime", item.getPostTime());
-                notificationToMap(notification, rs);
-                res.pushMap(rs);
-            }
-            promise.resolve(res);
-        } else {
-            if (verbose) Log.i("RNMoPushNotification", "getNotifications not supported on this platform");
-            promise.resolve(null);
+        NotificationManager notificationManager = Objects.requireNonNull(getReactApplicationContext().getSystemService(NotificationManager.class));
+        WritableArray res = Arguments.createArray();
+        for (StatusBarNotification item : notificationManager.getActiveNotifications()) {
+            Notification notification = item.getNotification();
+            WritableMap rs = Arguments.createMap();
+            rs.putInt("id", item.getId()); // returns 0 sometimes... then cancelNotification does not work...
+            rs.putBoolean("ongoing", !item.isClearable());
+            rs.putDouble("postTime", item.getPostTime());
+            notificationToMap(notification, rs);
+            res.pushMap(rs);
         }
+        promise.resolve(res);
     }
 
     private Bundle createBundleForNotification(ReadableMap args, NotificationCompat.Builder builder, int notificationID) {
@@ -531,12 +526,12 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
         notificationManager.notify(notificationID, builder.build());
 
-        if (args.hasKey("turnScreenOn") && args.getBoolean("turnScreenOn")) {
-            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
-            // PARTIAL_WAKE_LOCK does not work?
-            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
-            wl.acquire(10 * 1000);
-        }
+//        if (args.hasKey("turnScreenOn") && args.getBoolean("turnScreenOn")) {
+//            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
+//            // PARTIAL_WAKE_LOCK does not work?
+//            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
+//            wl.acquire(10 * 1000);
+//        }
 
         promise.resolve(notificationID);
     }
