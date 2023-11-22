@@ -53,8 +53,9 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
             Log.i("RNMoPushNotification", "Receiver.onReceive " + intent);
         }
         Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
+        if (bundle == null) return;
         if (ReactNativeMoPushNotification.verbose) {
-            for (String k : bundle.keySet()) {
+          for (String k : bundle.keySet()) {
                 Log.i("RNMoPushNotification", "[bundle." + k + "] = " + bundle.get(k));
             }
         }
@@ -70,16 +71,16 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
             }
         }
 
-        boolean background = bundle.getBoolean("background", false);
-        if (!background) {
-            if (ReactNativeMoPushNotification.verbose) {
-                Log.i("RNMoPushNotification", "Receiver startActivity");
-            }
-            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-            if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(launchIntent);
-        }
+//        boolean background = bundle.getBoolean("background", false);
+//        if (!background) {
+//            if (ReactNativeMoPushNotification.verbose) {
+//                Log.i("RNMoPushNotification", "Receiver startActivity");
+//            }
+//            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+//            if (launchIntent == null || launchIntent.getComponent() == null) throw new RuntimeException("launchIntent null");
+//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            context.startActivity(launchIntent);
+//        }
     }
 }

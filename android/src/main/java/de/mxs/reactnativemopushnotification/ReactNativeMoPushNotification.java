@@ -342,20 +342,31 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         return bundle;
     }
 
-    private PendingIntent createPendingIntent(Bundle bundle) {
-        Intent intent = new Intent(getReactApplicationContext(), ReactNativeMoPushNotificationReceiver.class);
-        intent.putExtra("ReactNativeMoPushNotification", bundle);
+    private PendingIntent createPendingIntent(Bundle bundle, boolean background) {
+        ReactApplicationContext context = getReactApplicationContext();
         requestIDCounter++;
         if (requestIDCounter == 65536) requestIDCounter = 1;
-        return PendingIntent.getBroadcast(
-            getReactApplicationContext(),
-            requestIDCounter,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+        if (background) {
+            Intent intent = new Intent(context, ReactNativeMoPushNotificationReceiver.class);
+            intent.putExtra("ReactNativeMoPushNotification", bundle);
+            return PendingIntent.getBroadcast(
+                context,
+                requestIDCounter,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+        } else {
+            Intent intent = Objects.requireNonNull(context.getPackageManager().getLaunchIntentForPackage(context.getPackageName()));
+            intent.putExtra("ReactNativeMoPushNotification", bundle);
+            return PendingIntent.getActivity(
+                context,
+                requestIDCounter,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+        }
     }
 
-    @SuppressLint("NotificationTrampoline")
     @SuppressWarnings("unused")
     @ReactMethod
     public void showNotification(ReadableMap args, Promise promise) throws Exception {
@@ -466,14 +477,17 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
 
         {
+            boolean background = args.hasKey("background") && args.getBoolean("background");
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
-            builder.setContentIntent(createPendingIntent(bundle));
+            builder.setContentIntent(createPendingIntent(bundle, background));
         }
 
         if (args.hasKey("fullScreen") && args.getBoolean("fullScreen")) {
+            // @TODO: this should be another intent...
+            boolean background = args.hasKey("background") && args.getBoolean("background");
             Bundle bundle = createBundleForNotification(args, builder, notificationID);
             bundle.putString("action", "fullScreen");
-            PendingIntent pendingIntent = createPendingIntent(bundle);
+            PendingIntent pendingIntent = createPendingIntent(bundle, background);
             builder.setFullScreenIntent(pendingIntent, true);
         }
 
@@ -482,11 +496,9 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
-                if (action.hasKey("background")) {
-                    bundle.putBoolean("background", action.getBoolean("background"));
-                }
+                boolean background = args.hasKey("background") && args.getBoolean("background");
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
-                PendingIntent pendingIntent = createPendingIntent(bundle);
+                PendingIntent pendingIntent = createPendingIntent(bundle, background);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
                 if (action.hasKey("icon")) {
                     iconID = resources.getIdentifier(action.getString("icon"), "mipmap", packageName);
@@ -529,13 +541,20 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void startMainActivity() {
-        if (verbose) Log.i("RNMoPushNotification", "startMainActivity");
-        Intent intent = Objects.requireNonNull(getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        if (verbose) Log.i("RNMoPushNotification", "startMainActivity start");
-        // @TODO: does not work in android Q ?
-        getReactApplicationContext().startActivity(intent);
+    public void startMainActivity(Promise promise) {
+        try {
+            if (verbose) Log.i("RNMoPushNotification", "startMainActivity");
+            Intent intent = Objects.requireNonNull(getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            if (verbose) Log.i("RNMoPushNotification", "startMainActivity start");
+            // @TODO: does not work in android Q ?
+            getReactApplicationContext().startActivity(intent);
+
+            Log.i("XXX", "currentActivity after=" + getReactApplicationContext().getCurrentActivity());
+
+        } catch (Exception ex) {
+            promise.reject(ex);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -598,10 +617,13 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+      Log.i("XXX", "onActivityResult " + requestCode + " " + resultCode);
     }
 
     @Override
     public void onNewIntent(Intent intent) {
+        Log.i("XXX", "onNewIntent " + intent.getAction() + " " + intent.getType() + " " + intent.getExtras());
+
         if (intent.hasExtra("google.message_id")) {
             // no way to get existing notification / title etc.
             Bundle extras = Objects.requireNonNull(intent.getExtras());

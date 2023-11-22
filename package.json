@@ -21,6 +21,10 @@
   "dependencies": {
     "mo-core": "^0.1.6"
   },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mo22/react-native-mo-pushnotification.git"
