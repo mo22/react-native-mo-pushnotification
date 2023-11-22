@@ -8,7 +8,7 @@ import * as android from './android';
  */
 export interface PushNotificationToken {
   /** type of token */
-  type: 'ios-dev'|'ios'|'android-fcm';
+  type: 'ios-dev' | 'ios' | 'android-fcm';
   /** the actual token */
   token: string;
   /** the id of this app: bundle id or package */
@@ -92,19 +92,19 @@ export class PushNotification {
    * return false here to prevent the notification from being shown.
    * i.e. a new chat while that chat is currently open
    */
-  public static onShowNotification: (notification: PushNotificationNotification) => boolean|Promise<boolean> = () => true;
+  public static onShowNotification: (notification: PushNotificationNotification) => boolean | Promise<boolean> = () => true;
 
   /**
    * called when a notification is received. app is running in background for
    * some time until this callback is finished.
    * can be used to load more data.
    */
-  public static onFetchData: (notification: PushNotificationNotification) => boolean|Promise<boolean> = () => true;
+  public static onFetchData: (notification: PushNotificationNotification) => boolean | Promise<boolean> = () => true;
 
   private static verbose: boolean = false;
 
   private static currentToken?: PushNotificationToken;
-  private static androidKnownNotifications: { [id: number]: PushNotificationNotification } = {};
+  private static androidKnownNotifications: { [id: number]: PushNotificationNotification; } = {};
 
   /**
    * be verbose
@@ -201,7 +201,7 @@ export class PushNotification {
           throw new Error('ReactNativeMoPushNotification.requestToken: permissions not granted');
         }
         this.currentToken = await new Promise<PushNotificationToken>((resolve, reject) => {
-          let sub: EmitterSubscription|undefined = ios.Events!.addListener('ReactNativeMoPushNotification', (rs) => {
+          let sub: EmitterSubscription | undefined = ios.Events!.addListener('ReactNativeMoPushNotification', (rs) => {
             if (rs.type === 'didFailToRegisterForRemoteNotificationsWithError') {
               if (sub) {
                 sub.remove();
@@ -269,7 +269,7 @@ export class PushNotification {
   /**
    * setup android push channels
    */
-  public static async androidSetupChannels(channels: (Partial<android.Channel> & { id: string })[]) {
+  public static async androidSetupChannels(channels: (Partial<android.Channel> & { id: string; })[]) {
     if (android.Module) {
       for (const channel of channels) {
         android.Module.createNotificationChannel(channel);
@@ -283,7 +283,7 @@ export class PushNotification {
    */
   public static async androidStartMainActivity() {
     if (android.Module) {
-      android.Module.startMainActivity();
+      await android.Module.startMainActivity();
     }
   }
 
@@ -428,7 +428,7 @@ export class PushNotification {
   /**
    * get the active notifications from the notification center
    */
-  public static async getNotifications(): Promise<(PushNotificationNotification & { id: string })[]> {
+  public static async getNotifications(): Promise<(PushNotificationNotification & { id: string; })[]> {
     if (ios.Module) {
       let tmp = await ios.Module.getDeliveredNotifications();
       return tmp.map((rs) => {
@@ -477,7 +477,7 @@ export class PushNotification {
    */
   public static async removeNotification(id: string) {
     if (ios.Module) {
-      ios.Module.removeDeliveredNotifications([ id ]);
+      ios.Module.removeDeliveredNotifications([id]);
     } else if (android.Module) {
       android.Module.cancelNotification(parseInt(id));
     }
@@ -486,7 +486,7 @@ export class PushNotification {
   /**
    * show a notification
    */
-  public static async showNotification(args: PushNotificationNotification): Promise<string|undefined> {
+  public static async showNotification(args: PushNotificationNotification): Promise<string | undefined> {
     if (ios.Module) {
       const id = Date.now().toString();
       await ios.Module.showNotification({

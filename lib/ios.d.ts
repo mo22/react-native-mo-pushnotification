@@ -101,7 +101,7 @@ export interface Module {
     showNotification(args: NotificationArgs): Promise<void>;
     setupCategories(categories: Category[]): void;
 }
-export declare type Event = {
+export type Event = {
     type: 'didRegisterForRemoteNotificationsWithDeviceToken';
     deviceToken: string;
     isDevEnvironment: boolean;

@@ -5,7 +5,7 @@ export enum AuthorizationOption {
   Sound = 2,
   Alert = 4,
   CarPlay = 8,
-  CriticalAlert  = 16,
+  CriticalAlert = 16,
   ProvidesAppNotificationSettings = 32,
 }
 
@@ -29,18 +29,18 @@ export enum NotificationSetting {
 }
 
 export interface DeliveredNotification {
-  body?: string|null;
-  sound?: string|null;
-  launchImageName?: string|null;
-  badge?: number|null;
-  subtitle?: string|null;
-  title?: string|null;
+  body?: string | null;
+  sound?: string | null;
+  launchImageName?: string | null;
+  badge?: number | null;
+  subtitle?: string | null;
+  title?: string | null;
   identifier: string;
-  summaryArgumentCount?: number|null;
-  summaryArgument?: string|null;
+  summaryArgumentCount?: number | null;
+  summaryArgument?: string | null;
   date: number;
-  categoryIdentifier?: string|null;
-  threadIdentifier?: string|null;
+  categoryIdentifier?: string | null;
+  threadIdentifier?: string | null;
   userInfo?: object;
 }
 
@@ -133,13 +133,13 @@ export type Event = {
     aps: {
       sound?: string;
       badge?: number;
-      ['content-available']?: 1|0;
+      ['content-available']?: 1 | 0;
       alert?: {
         body?: string;
         title?: string;
         subtitle?: string;
-      }
-    }
+      };
+    };
   };
   callbackKey: string;
 } | {

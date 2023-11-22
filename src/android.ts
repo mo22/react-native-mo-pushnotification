@@ -38,7 +38,7 @@ export interface Notification {
   body?: string;
   vibrate?: number[];
   priority?: Priority;
-  category?: 'call'|'navigation'|'msg'|'email'|'event'|'promo'|'alarm'|'progress'|'social'|'err'|'transport'|'sys'|'service'|'recommendation'|'status'|'reminder'|'car_emergency'|'car_warning'|'car_information';
+  category?: 'call' | 'navigation' | 'msg' | 'email' | 'event' | 'promo' | 'alarm' | 'progress' | 'social' | 'err' | 'transport' | 'sys' | 'service' | 'recommendation' | 'status' | 'reminder' | 'car_emergency' | 'car_warning' | 'car_information';
   number?: number;
   colorized?: boolean;
   visibility?: Visibility;
@@ -67,7 +67,7 @@ export interface Notification {
       showsUserInterface?: boolean;
       background?: boolean;
     })[];
-  data?: { [k: string]: string|number|boolean };
+  data?: { [k: string]: string | number | boolean; };
 }
 
 export interface ExistingNotification {
@@ -76,9 +76,9 @@ export interface ExistingNotification {
   postTime: number;
   color: number;
   number: number;
-  title: string|null;
-  subtext: string|null;
-  body: string|null;
+  title: string | null;
+  subtext: string | null;
+  body: string | null;
   channelID?: string;
   data: any;
 }
@@ -96,49 +96,47 @@ export interface Module {
   cancelNotification(id: number): void;
   getNotifications(): Promise<ExistingNotification[] | undefined>;
   showNotification(args: Notification): Promise<number>;
-  startMainActivity(): void;
+  startMainActivity(): Promise<boolean>;
   acquireWakeLock(tag: string, timeout: number): Promise<string>;
   releaseWakeLock(key: string): Promise<void>;
-  testWorkManager(): void;
-  setStartOnBoot(active: boolean): Promise<void>;
   scheduleWakeup(args: { time: number; test?: string; }): Promise<void>;
 }
 
 export type Event = {
   type: 'onMessageReceived';
-  from: string|null;
-  to: string|null;
+  from: string | null;
+  to: string | null;
   messageId: string;
-  messageType?: string|null;
-  collapseKey?: string|null;
+  messageType?: string | null;
+  collapseKey?: string | null;
   sentTime: number;
   priority: number;
   originalPriority: number;
   ttl: number;
-  data: { [k: string]: string };
-  title?: string|null;
-  body?: string|null;
-  sound?: string|null;
-  color?: string|null;
-  icon?: string|null;
-  tag?: string|null;
+  data: { [k: string]: string; };
+  title?: string | null;
+  body?: string | null;
+  sound?: string | null;
+  color?: string | null;
+  icon?: string | null;
+  tag?: string | null;
 } | {
   type: 'onNotificationClicked';
   id: number;
   action?: string;
-  title: string|null;
-  subtext: string|null;
-  body: string|null;
+  title: string | null;
+  subtext: string | null;
+  body: string | null;
   number?: number;
   color?: number;
   channelID?: string;
   data?: any;
 } | {
   type: 'onNotificationIntent';
-  from: string|null;
-  collapseKey?: string|null;
+  from: string | null;
+  collapseKey?: string | null;
   messageId: string;
-  data: { [k: string]: string };
+  data: { [k: string]: string; };
 };
 
 export const Module = (Platform.OS === 'android') ? NativeModules.ReactNativeMoPushNotification as Module : undefined;

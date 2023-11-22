@@ -97,17 +97,15 @@ export interface Module {
     cancelNotification(id: number): void;
     getNotifications(): Promise<ExistingNotification[] | undefined>;
     showNotification(args: Notification): Promise<number>;
-    startMainActivity(): void;
+    startMainActivity(): Promise<boolean>;
     acquireWakeLock(tag: string, timeout: number): Promise<string>;
     releaseWakeLock(key: string): Promise<void>;
-    testWorkManager(): void;
-    setStartOnBoot(active: boolean): Promise<void>;
     scheduleWakeup(args: {
         time: number;
         test?: string;
     }): Promise<void>;
 }
-export declare type Event = {
+export type Event = {
     type: 'onMessageReceived';
     from: string | null;
     to: string | null;
