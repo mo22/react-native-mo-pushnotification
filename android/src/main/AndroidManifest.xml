@@ -4,7 +4,6 @@
 >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application>
 
@@ -18,12 +17,6 @@
         </service>
 
         <receiver android:name=".ReactNativeMoPushNotificationReceiver">
-        </receiver>
-
-        <receiver android:name=".ReactNativeMoPushNotificationBootReceiver" android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
         </receiver>
 
         <meta-data

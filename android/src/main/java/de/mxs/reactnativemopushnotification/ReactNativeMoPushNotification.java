@@ -2,7 +2,6 @@ package de.mxs.reactnativemopushnotification;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,7 +9,6 @@ import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -495,7 +493,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
             for (int i=0; i<actions.size(); i++) {
                 ReadableMap action = Objects.requireNonNull(actions.getMap(i));
                 Bundle bundle = createBundleForNotification(args, builder, notificationID);
-                boolean background = args.hasKey("background") && args.getBoolean("background");
+                boolean background = action.hasKey("background") && action.getBoolean("background");
                 bundle.putString("action", Objects.requireNonNull(action.getString("id")));
                 PendingIntent pendingIntent = createPendingIntent(bundle, background);
                 int iconID = resources.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -528,13 +526,15 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
 
         notificationManager.notify(notificationID, builder.build());
 
-//        if (args.hasKey("turnScreenOn") && args.getBoolean("turnScreenOn")) {
-//            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
-//            // PARTIAL_WAKE_LOCK does not work?
-//            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
-//            wl.acquire(10 * 1000);
-//        }
-
+        if (args.hasKey("turnScreenOn") && args.getBoolean("turnScreenOn")) {
+            PowerManager powerManager = Objects.requireNonNull(getReactApplicationContext().getSystemService(PowerManager.class));
+            if (!powerManager.isInteractive()) {
+                // PARTIAL_WAKE_LOCK is not sufficient.
+//                PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
+                PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,"notification:turnScreenOn");
+                wl.acquire(10 * 1000);
+            }
+        }
         promise.resolve(notificationID);
     }
 
@@ -542,76 +542,15 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @ReactMethod
     public void startMainActivity(Promise promise) {
         try {
+            // @TODO: remove this as it is not supported any more.
             if (verbose) Log.i("RNMoPushNotification", "startMainActivity");
             Intent intent = Objects.requireNonNull(getReactApplicationContext().getPackageManager().getLaunchIntentForPackage(getReactApplicationContext().getPackageName()));
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             if (verbose) Log.i("RNMoPushNotification", "startMainActivity start");
-            // @TODO: does not work in android Q ?
             getReactApplicationContext().startActivity(intent);
-
-            Log.i("XXX", "currentActivity after=" + getReactApplicationContext().getCurrentActivity());
-
         } catch (Exception ex) {
             promise.reject(ex);
         }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void acquireWakeLock(String tag, int timeout, Promise promise) {
-        try {
-            PowerManager powerManager = Objects.requireNonNull((PowerManager)getReactApplicationContext().getSystemService(Context.POWER_SERVICE));
-            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                tag);
-            String key = "" + wakeLock.hashCode() + "-" + wakeLock.toString();
-            wakeLock.acquire(timeout);
-            this.wakeLocks.put(key, wakeLock);
-            promise.resolve(key);
-        } catch (Exception e) {
-            promise.reject(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void releaseWakeLock(String key, Promise promise) {
-        PowerManager.WakeLock wakeLock = this.wakeLocks.remove(key);
-        if (wakeLock == null) return;
-        try {
-            wakeLock.release();
-            promise.resolve(null);
-        } catch (Exception e) {
-            promise.reject(e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void scheduleWakeup(ReadableMap args, Promise promise) {
-        long time = (long)args.getDouble("time");
-        if (ReactNativeMoPushNotification.verbose) {
-            Log.i("RNMoPushNotification", "scheduleWakeup " + new Date(time).toString());
-        }
-        String test = args.getString("test");
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("background", true);
-        if (test != null) bundle.putString("test", test);
-        bundle.putLong("time", time);
-        PendingIntent pendingIntent = createPendingIntent(bundle, true);
-        AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-        promise.resolve(null);
-    }
-
-    @SuppressWarnings("unused")
-    @ReactMethod
-    public void setStartOnBoot(boolean arg, Promise promise) {
-        if (ReactNativeMoPushNotification.verbose) {
-            Log.i("RNMoPushNotification", "setStartOnBoot " + arg);
-        }
-        SharedPreferences sharedPreferences = getReactApplicationContext().getSharedPreferences("de.mxs.reactnativemopushnotification", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean("startOnBoot", arg).apply();
-        promise.resolve(null);
     }
 
     @Override
