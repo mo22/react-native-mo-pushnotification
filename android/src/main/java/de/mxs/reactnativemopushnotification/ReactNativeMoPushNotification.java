@@ -41,7 +41,7 @@ import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.installations.FirebaseInstallations;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -147,16 +147,16 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     @SuppressWarnings("unused")
     @ReactMethod
     public void getFirebaseInstanceId(final Promise promise) {
-        FirebaseInstanceId firebaseInstanceId;
+        FirebaseInstallations firebaseInstallations;
         try {
-            firebaseInstanceId = FirebaseInstanceId.getInstance();
+            firebaseInstallations = FirebaseInstallations.getInstance();
         } catch (IllegalStateException e) {
             Log.i("RNMoPushNotification", "getFirebaseInstanceId: firebase not set up");
             promise.reject(e);
             return;
         }
-        firebaseInstanceId.getInstanceId().addOnSuccessListener(
-                instanceIdResult -> promise.resolve(instanceIdResult.getToken())
+        firebaseInstallations.getToken(false).addOnSuccessListener(
+                res -> promise.resolve(res.getToken())
         ).addOnFailureListener(ex -> {
             Log.i("RNMoPushNotification", "getFirebaseInstanceId", ex);
             promise.reject(ex);
@@ -178,6 +178,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         promise.resolve(res);
     }
 
+    @SuppressLint("DiscouragedApi")
     @SuppressWarnings("unused")
     @ReactMethod
     public void createNotificationChannel(ReadableMap args) {
@@ -367,6 +368,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         }
     }
 
+    @SuppressLint("DiscouragedApi")
     @SuppressWarnings("unused")
     @ReactMethod
     public void showNotification(ReadableMap args, Promise promise) throws Exception {
@@ -598,7 +600,7 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
         bundle.putBoolean("background", true);
         if (test != null) bundle.putString("test", test);
         bundle.putLong("time", time);
-        PendingIntent pendingIntent = createPendingIntent(bundle);
+        PendingIntent pendingIntent = createPendingIntent(bundle, true);
         AlarmManager alarmManager = Objects.requireNonNull((AlarmManager)getReactApplicationContext().getSystemService(Context.ALARM_SERVICE));
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         promise.resolve(null);
