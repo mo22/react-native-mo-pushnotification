@@ -623,6 +623,25 @@ public class ReactNativeMoPushNotification extends ReactContextBaseJavaModule im
     public void onNewIntent(Intent intent) {
         Log.i("XXX", "onNewIntent " + intent.getAction() + " " + intent.getType() + " " + intent.getExtras());
 
+        if (intent.hasExtra("ReactNativeMoPushNotification")) {
+            Bundle bundle = Objects.requireNonNull(intent.getBundleExtra("ReactNativeMoPushNotification"));
+            Bundle data = bundle.getBundle("data");
+            Notification notification = bundle.getParcelable("notification");
+            WritableMap args = Arguments.createMap();
+            args.putString("type", "onNotificationClicked");
+            args.putInt("id", bundle.getInt("id", 0));
+            if (data != null) {
+                args.putMap("data", Arguments.fromBundle(data));
+            }
+            if (bundle.containsKey("action")) {
+                args.putString("action", bundle.getString("action"));
+            }
+            if (notification != null) {
+                ReactNativeMoPushNotification.notificationToMap(notification, args);
+            }
+            getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeMoPushNotification", args);
+        }
+
         if (intent.hasExtra("google.message_id")) {
             // no way to get existing notification / title etc.
             Bundle extras = Objects.requireNonNull(intent.getExtras());

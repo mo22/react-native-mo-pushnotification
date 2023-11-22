@@ -38,7 +38,12 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
         WritableMap args = Arguments.createMap();
         args.putString("type", "onNotificationClicked");
         args.putInt("id", bundle.getInt("id", 0));
-        if (bundle.containsKey("action")) args.putString("action", bundle.getString("action"));
+        if (data != null) {
+            args.putMap("data", Arguments.fromBundle(data));
+        }
+        if (bundle.containsKey("action")) {
+            args.putString("action", bundle.getString("action"));
+        }
         if (notification != null) {
             ReactNativeMoPushNotification.notificationToMap(notification, args);
         }
@@ -51,21 +56,22 @@ public class ReactNativeMoPushNotificationReceiver extends BroadcastReceiver {
             Log.i("RNMoPushNotification", "Receiver.onReceive " + intent);
         }
         Bundle bundle = intent.getBundleExtra("ReactNativeMoPushNotification");
-        if (bundle == null) return;
-        if (ReactNativeMoPushNotification.verbose) {
-          for (String k : bundle.keySet()) {
-                Log.i("RNMoPushNotification", "[bundle." + k + "] = " + bundle.get(k));
+        if (bundle != null) {
+            if (ReactNativeMoPushNotification.verbose) {
+                for (String k : bundle.keySet()) {
+                    Log.i("RNMoPushNotification", "[bundle." + k + "] = " + bundle.get(k));
+                }
             }
-        }
 
-        ReactInstanceManager reactInstanceManager = ((ReactApplication)context.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
-        ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
-        if (reactContext != null) {
-            sendEvent(reactContext, bundle);
-        } else {
-            reactInstanceManager.addReactInstanceEventListener(reactContextNew -> sendEvent(reactContextNew, bundle));
-            if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
-                reactInstanceManager.createReactContextInBackground();
+            ReactInstanceManager reactInstanceManager = ((ReactApplication) context.getApplicationContext()).getReactNativeHost().getReactInstanceManager();
+            ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
+            if (reactContext != null) {
+                sendEvent(reactContext, bundle);
+            } else {
+                reactInstanceManager.addReactInstanceEventListener(reactContextNew -> sendEvent(reactContextNew, bundle));
+                if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
+                    reactInstanceManager.createReactContextInBackground();
+                }
             }
         }
     }
