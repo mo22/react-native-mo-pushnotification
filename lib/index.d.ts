@@ -121,11 +121,6 @@ export declare class PushNotification {
     static androidSetupChannels(channels: (Partial<android.Channel> & {
         id: string;
     })[]): Promise<void>;
-    /**
-     * start android main activity, force in foreground
-     * @TODO: android Q prevents this.
-     */
-    static androidStartMainActivity(): Promise<void>;
     private static setupEventsDone;
     static setupEvents(): void;
     /**

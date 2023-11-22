@@ -277,16 +277,6 @@ export class PushNotification {
     }
   }
 
-  /**
-   * start android main activity, force in foreground
-   * @TODO: android Q prevents this.
-   */
-  public static async androidStartMainActivity() {
-    if (android.Module) {
-      await android.Module.startMainActivity();
-    }
-  }
-
   private static setupEventsDone = false;
 
   public static setupEvents() {

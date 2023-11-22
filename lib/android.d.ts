@@ -98,13 +98,8 @@ export interface Module {
     cancelNotification(id: number): void;
     getNotifications(): Promise<ExistingNotification[] | undefined>;
     showNotification(args: Notification): Promise<number>;
-    startMainActivity(): Promise<boolean>;
     acquireWakeLock(tag: string, timeout: number): Promise<string>;
     releaseWakeLock(key: string): Promise<void>;
-    scheduleWakeup(args: {
-        time: number;
-        test?: string;
-    }): Promise<void>;
 }
 export type Event = {
     type: 'onMessageReceived';
