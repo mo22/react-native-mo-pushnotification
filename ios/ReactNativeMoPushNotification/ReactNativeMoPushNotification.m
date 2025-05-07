@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
 }
 
 + (void)swizzleDelegate {
-    assert([NSThread isMainThread]);
+    // assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
