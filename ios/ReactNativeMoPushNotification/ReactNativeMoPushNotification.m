@@ -74,21 +74,23 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     // assert([NSThread isMainThread]);
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
-        assert(appDelegate);
-        methodSwizzle(
-            [appDelegate class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:),
-            [self class],@selector(swizzled_application:didRegisterForRemoteNotificationsWithDeviceToken:)
-        );
-        methodSwizzle(
-            [appDelegate class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:),
-            [self class],@selector(swizzled_application:didFailToRegisterForRemoteNotificationsWithError:)
-        );
-        methodSwizzle(
-            [appDelegate class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
-            [self class],@selector(swizzled_application:didReceiveRemoteNotification:fetchCompletionHandler:)
-        );
-        RCTSharedApplication().delegate = appDelegate;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            id<UIApplicationDelegate> appDelegate = RCTSharedApplication().delegate;
+            assert(appDelegate);
+            methodSwizzle(
+                [appDelegate class], @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:),
+                [self class],@selector(swizzled_application:didRegisterForRemoteNotificationsWithDeviceToken:)
+            );
+            methodSwizzle(
+                [appDelegate class], @selector(application:didFailToRegisterForRemoteNotificationsWithError:),
+                [self class],@selector(swizzled_application:didFailToRegisterForRemoteNotificationsWithError:)
+            );
+            methodSwizzle(
+                [appDelegate class], @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
+                [self class],@selector(swizzled_application:didReceiveRemoteNotification:fetchCompletionHandler:)
+            );
+            RCTSharedApplication().delegate = appDelegate;
+        });
     });
 }
 
@@ -189,10 +191,6 @@ RCT_EXPORT_METHOD(setVerbose:(BOOL)verbose) {
     rs[@"launchImageName"] = RCTNullIfNil(notification.request.content.launchImageName);
     rs[@"userInfo"] = RCTNullIfNil(RCTJSONClean(notification.request.content.userInfo));
     // attachments?
-    if (@available(iOS 12.0, *)) {
-        rs[@"summaryArgument"] = RCTNullIfNil(notification.request.content.summaryArgument);
-        rs[@"summaryArgumentCount"] = @(notification.request.content.summaryArgumentCount);
-    }
     rs[@"categoryIdentifier"] = RCTNullIfNil(notification.request.content.categoryIdentifier);
     rs[@"threadIdentifier"] = RCTNullIfNil(notification.request.content.threadIdentifier);
     // trigger?
